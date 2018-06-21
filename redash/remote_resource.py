@@ -44,6 +44,9 @@ def create_map_func(cred_mapping):
                 result[to_key] = req.cookies[key]
             else:
                 result[to_key] = user.__getattribute__(key)
+            
+            if to_key is 'Authorization' and 'Bearer' not in result[to_key]:
+                result[to_key] = 'Bearer ' + result[to_key].strip()
         return result
 
     return function_template
