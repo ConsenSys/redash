@@ -35,7 +35,7 @@ def login(org_slug=None):
 
     try:
         public_key = get_jwt_public_key()
-        jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, get_jwt_public_key())
+        jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
         email = jwt_decoded.get('email', None)
 
         if not email:
