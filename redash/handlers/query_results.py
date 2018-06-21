@@ -1,6 +1,7 @@
 import logging
 import json
 import time
+import requests
 
 import pystache
 from flask import make_response, request
@@ -9,6 +10,7 @@ from flask_restful import abort
 from redash import models, settings, utils
 from redash.tasks import QueryTask, record_event
 from redash.permissions import require_permission, not_view_only, has_access, require_access, view_only
+from redash.remote_resource import remote_resource_restriction
 from redash.handlers.base import BaseResource, get_object_or_404
 from redash.utils import collect_query_parameters, collect_parameters_from_request, gen_query_hash
 from redash.tasks.queries import enqueue_query
@@ -119,6 +121,9 @@ class QueryResultListResource(BaseResource):
         if not has_access(data_source.groups, self.current_user, not_view_only):
             return {'job': {'status': 4, 'error': 'You do not have permission to run queries with this data source.'}}, 403
 
+        if settings.REMOTE_RESOURCE_RESTRICTION_ENABLED and remote_resource_restriction(parameter_values, self.current_user, request):
+            return {'job': {'status': 4, 'error': 'You have a remote resource restriction on the provided parameters.'}}, 403
+
         self.record_event({
             'action': 'execute_query',
             'timestamp': int(time.time()),
@@ -180,6 +185,9 @@ class QueryResultResource(BaseResource):
 
         parameter_values = collect_parameters_from_request(request.args)
         max_age = int(request.args.get('maxAge', 0))
+
+        if settings.REMOTE_RESOURCE_RESTRICTION_ENABLED and remote_resource_restriction(parameter_values, self.current_user, request):
+            abort(403, 'You have a remote resource restriction on the provided parameters.')
 
         query_result = None
 

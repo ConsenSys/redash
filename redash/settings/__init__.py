@@ -230,3 +230,17 @@ REMOTE_JWT_LOGIN_ENABLED = parse_boolean(os.environ.get("REDASH_REMOTE_JWT_LOGIN
 REMOTE_JWT_REFRESH_PROVIDER = os.environ.get("REDASH_REMOTE_JWT_REFRESH_PROVIDER", '/login')
 REMOTE_JWT_EXPIRED_ENDPOINT = os.environ.get("REDASH_REMOTE_JWT_EXPIRED_ENDPOINT", '')
 REMOTE_JWT_PUBLIC_KEY_FILE = os.environ.get("REDASH_REMOTE_JWT_PUBLIC_KEY_FILE", '')
+
+# Remote Resource Restriction
+REMOTE_RESOURCE_RESTRICTION_ENABLED = parse_boolean(os.environ.get("REDASH_REMOTE_RESOURCE_RESTRICTION_ENABLED", "false"))
+# This supports a single layer of alternative url matching against parameter names.
+# Example: http://localhost:5050/api/v1/customer(/{{customer}},/{{customer}}/address/{{primary_address}})
+# In this example, http://localhost:5050/api/v1/customer/{{customer}} will be used only if the 'customer'
+# is present by itself and http://localhost:5050/api/v1/customer/{{customer}}/address/{{primary_address}}
+# if both 'customer' and 'primary_address' are present.
+REMOTE_RESOURCE_VALIDATOR = os.environ.get("REDASH_REMOTE_RESOURCE_VALIDATOR", '')
+# Comma-separated list of values to map into the validation request: 'headers.*', 'cookies.*', 'user.*'
+# These will be put into where they were pulled from by default (user.* will go into the body and the request method will be POST)
+# Where the values are put can be overwritten with '<request>.*=<value.value>' where <request> is one of 'headers', 'cookies', 'data'
+# Examples: 'headers.Authorization' equals 'headers.Authorization=headers.Authorization' and 'data.email=user.email,headers.Authorization,cookies.jwt' is valid
+REMOTE_RESOURCE_CREDENTIAL = os.environ.get("REDASH_REMOTE_RESOURCE_CREDENTIAL", 'headers.Authorization')
