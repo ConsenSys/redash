@@ -5,7 +5,7 @@ from flask import abort, flash, redirect, render_template, request, url_for
 
 from flask_login import current_user, login_required, login_user, logout_user
 from redash import __version__, limiter, models, settings
-from redash.authentication import current_org, get_login_url
+from redash.authentication import current_org, get_login_url, remote_jwt_auth
 from redash.authentication.account import (BadSignature, SignatureExpired,
                                            send_password_reset_email,
                                            validate_token)
@@ -111,6 +111,9 @@ def login(org_slug=None):
     next_path = request.args.get('next', index_url)
     if current_user.is_authenticated:
         return redirect(next_path)
+
+    if settings.REMOTE_JWT_LOGIN_ENABLED and request.cookies['jwt']:
+        return remote_jwt_auth(org_slug)
 
     if request.method == 'POST':
         try:

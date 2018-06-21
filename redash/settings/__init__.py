@@ -224,3 +224,9 @@ SCHEMA_RUN_TABLE_SIZE_CALCULATIONS = parse_boolean(os.environ.get("REDASH_SCHEMA
 # Allow Parameters in Embeds
 # WARNING: With this option enabled, Redash reads query parameters from the request URL (risk of SQL injection!)
 ALLOW_PARAMETERS_IN_EMBEDS = parse_boolean(os.environ.get("REDASH_ALLOW_PARAMETERS_IN_EMBEDS", "false"))
+
+# Remote JWT Authentication
+REMOTE_JWT_LOGIN_ENABLED = parse_boolean(os.environ.get("REDASH_REMOTE_JWT_LOGIN_ENABLED", "false"))
+REMOTE_JWT_REFRESH_PROVIDER = os.environ.get("REDASH_REMOTE_JWT_REFRESH_PROVIDER", '/login')
+REMOTE_JWT_EXPIRED_ENDPOINT = os.environ.get("REDASH_REMOTE_JWT_EXPIRED_ENDPOINT", '')
+REMOTE_JWT_PUBLIC_KEY_FILE = os.environ.get("REDASH_REMOTE_JWT_PUBLIC_KEY_FILE", '')
