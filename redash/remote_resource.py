@@ -35,18 +35,23 @@ for use in the call to the validator.
 def create_map_func(cred_mapping):
     def function_template(user, req):
         result = {}
-        for to_key, from_loc in cred_mapping.items():
-            loc, key = from_loc
-            
-            if loc == 'headers':
-                result[to_key] = req.headers[key]
-            elif loc == 'cookies':
-                result[to_key] = req.cookies[key]
-            else:
-                result[to_key] = user.__getattribute__(key)
-            
-            if to_key is 'Authorization' and 'Bearer' not in result[to_key]:
-                result[to_key] = 'Bearer ' + result[to_key].strip()
+        for to_key, from_locs in cred_mapping.items():
+            for from_loc in from_locs:
+                loc, key = from_loc
+                value = None
+                
+                if loc == 'headers':
+                    value = req.headers.get(key, None)
+                elif loc == 'cookies':
+                    value = req.cookies.get(key, None)
+                else:
+                    value = user.__getattribute__(key) if key in dir(user) else None
+                
+                if to_key is 'Authorization' and value not None and 'Bearer' not in value:
+                    value = 'Bearer ' + value.strip()
+
+                if result[to_key] is None:
+                    result[to_key] = value
         return result
 
     return function_template
@@ -72,12 +77,15 @@ def get_resource_creds():
             _from = parts[1].split('.')
             _to_loc = _to[0]
             _to_loc_key = _to[1]
+            _to_loc_store = '_' + _to_loc
 
             if _to_loc not in _remote_creds:
-                _remote_creds['_' + _to_loc] = {}
-                _remote_creds[_to_loc] = create_map_func(_remote_creds['_' + _to_loc])
+                _remote_creds[_to_loc_store] = {}
+                _remote_creds[_to_loc] = create_map_func(_remote_creds[_to_loc_store])
 
-            _remote_creds['_' + _to_loc][_to_loc_key] = (_from[0], _from[1])
+            if _to_loc_key not in _remote_creds[_to_loc_store]:
+                _remote_creds[_to_loc_store][_to_loc_key] = []
+            _remote_creds[_to_loc_store][_to_loc_key].append((_from[0], _from[1]))
             
     return _remote_creds
 
