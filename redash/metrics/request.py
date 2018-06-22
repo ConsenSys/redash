@@ -1,15 +1,18 @@
 import logging
 import time
+import requests
+
+from jose import jwt
 from collections import namedtuple
 
 from flask import g, request
-
-from redash import statsd_client
+from redash import statsd_client, settings
+from redash.authentication import get_jwt_public_key
 
 metrics_logger = logging.getLogger("metrics")
 
 
-def record_requets_start_time():
+def record_request_start_time():
     g.start_time = time.time()
 
 
@@ -46,6 +49,6 @@ def calculate_metrics_on_exception(error):
 
 
 def provision_app(app):
-    app.before_request(record_requets_start_time)
+    app.before_request(record_request_start_time)
     app.after_request(calculate_metrics)
     app.teardown_request(calculate_metrics_on_exception)

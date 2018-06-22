@@ -15,6 +15,15 @@ login_manager = LoginManager()
 logger = logging.getLogger('authentication')
 
 
+_jwtPublicKey = None
+def get_jwt_public_key():
+    global _jwtPublicKey
+    if not _jwtPublicKey:
+        keyFile = open(settings.JWT_AUTH_PUBLIC_KEY_FILE, 'r')
+        _jwtPublicKey = keyFile.read()
+    return _jwtPublicKey
+
+
 def get_login_url(external=False, next="/"):
     if settings.MULTI_ORG and current_org == None:
         login_url = '/'
@@ -156,7 +165,7 @@ def logout_and_redirect_to_index():
 
 
 def setup_authentication(app):
-    from redash.authentication import google_oauth, saml_auth, remote_user_auth, ldap_auth
+    from redash.authentication import google_oauth, saml_auth, remote_user_auth, remote_jwt_auth, ldap_auth
 
     login_manager.init_app(app)
     login_manager.anonymous_user = models.AnonymousUser
@@ -165,6 +174,7 @@ def setup_authentication(app):
     app.register_blueprint(google_oauth.blueprint)
     app.register_blueprint(saml_auth.blueprint)
     app.register_blueprint(remote_user_auth.blueprint)
+    app.register_blueprint(remote_jwt_auth.blueprint)
     app.register_blueprint(ldap_auth.blueprint)
 
     user_logged_in.connect(log_user_logged_in)

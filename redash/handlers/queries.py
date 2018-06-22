@@ -8,6 +8,7 @@ from funcy import distinct, take
 from sqlalchemy.orm.exc import StaleDataError
 
 from redash import models, settings
+from redash.remote_resource import remote_resource_restriction
 from redash.handlers.base import (BaseResource, get_object_or_404,
                                   org_scoped_rule, paginate, routes)
 from redash.handlers.query_results import run_query
@@ -283,5 +284,8 @@ class QueryRefreshResource(BaseResource):
         require_access(query.groups, self.current_user, not_view_only)
 
         parameter_values = collect_parameters_from_request(request.args)
+
+        if settings.REMOTE_RESOURCE_RESTRICTION_ENABLED and remote_resource_restriction(parameter_values, self.current_user, request):
+            abort(403, message='You have a remote resource restriction on the provided parameters.')
 
         return run_query(query.data_source, parameter_values, query.query_text, query.id)
