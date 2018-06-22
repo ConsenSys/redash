@@ -103,7 +103,7 @@ def create_app(load_admin=True):
             def process_response(self, response):
                 jwttoken = request.cookies.get('jwt', None)
 
-                if jwttoken not None:
+                if jwttoken is not None:
                     public_key = get_jwt_public_key()
                     jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
                     iat = jwt_decoded['iat']
@@ -113,7 +113,7 @@ def create_app(load_admin=True):
                     if iat + 1200 < now <= exp:
                         email = jwt_decoded.get('email', None)
                         resp = requests.post(settings.REMOTE_JWT_REFRESH_PROVIDER, headers={ 'Authorization' : 'Bearer ' + jwttoken }, data={ 'email': email })
-                        if resp.status_code > 300 and resp.data.get('jwt', None) not None:
+                        if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
                             response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
                         elif resp.status_code == 401:
                             return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')

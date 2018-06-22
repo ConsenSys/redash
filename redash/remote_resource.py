@@ -47,7 +47,7 @@ def create_map_func(cred_mapping):
                 else:
                     value = user.__getattribute__(key) if key in dir(user) else None
                 
-                if to_key is 'Authorization' and value not None and 'Bearer' not in value:
+                if to_key is 'Authorization' and value is not None and 'Bearer' not in value:
                     value = 'Bearer ' + value.strip()
 
                 if result[to_key] is None:
