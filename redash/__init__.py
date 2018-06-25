@@ -4,7 +4,7 @@ import logging
 import urlparse
 import urllib
 import redis
-from flask import Flask, safe_join
+from flask import Flask, safe_join, request, redirect
 from flask_sslify import SSLify
 from werkzeug.contrib.fixers import ProxyFix
 from werkzeug.routing import BaseConverter, ValidationError
@@ -95,30 +95,34 @@ def create_app(load_admin=True):
     from redash.handlers.webpack import configure_webpack
     from redash.admin import init_admin
     from redash.models import db
-    from redash.authentication import setup_authentication
+    from redash.authentication import setup_authentication, get_jwt_public_key
     from redash.metrics.request import provision_app
+    from jose import jwt
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
             def process_response(self, response):
-                jwttoken = request.cookies.get('jwt', None)
+                try:
+                    jwttoken = request.cookies.get('jwt', None)
 
-                if jwttoken is not None:
-                    public_key = get_jwt_public_key()
-                    jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
-                    iat = jwt_decoded['iat']
-                    exp = jwt_decoded['exp']
-                    now = time.time()
+                    if jwttoken is not None:
+                        public_key = get_jwt_public_key()
+                        jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
+                        iat = jwt_decoded['iat']
+                        exp = jwt_decoded['exp']
+                        now = time.time()
 
-                    if iat + 1200 < now <= exp:
-                        email = jwt_decoded.get('email', None)
-                        resp = requests.post(settings.REMOTE_JWT_REFRESH_PROVIDER, headers={ 'Authorization' : 'Bearer ' + jwttoken }, data={ 'email': email })
-                        if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
-                            response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
-                        elif resp.status_code == 401:
+                        if iat + 1200 < now <= exp:
+                            email = jwt_decoded.get('email', None)
+                            resp = requests.post(settings.REMOTE_JWT_REFRESH_PROVIDER, headers={ 'Authorization' : 'Bearer ' + jwttoken }, data={ 'email': email })
+                            if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
+                                response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
+                            elif resp.status_code == 401:
+                                return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
+                        elif now > exp:
                             return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
-                    elif now > exp:
-                        return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
+                except jwt.JWTError, jwt.ExpiredSignatureError:
+                    return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
                 return response
         
         app = JwtFlask(__name__,
