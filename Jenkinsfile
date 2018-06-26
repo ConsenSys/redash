@@ -14,14 +14,23 @@ node {
             checkout scm 
         }
 
-        stage ("Build Dashboard Image") {
-            customImage = docker.build("${targetImageName}:${tagPrefix}-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
+        stage ("Build Workers Image") {
+            customWorkersImage = docker.build("${targetImageName}workers:${tagPrefix}-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
         }
 
-        if ("$tagPrefix" != "pr") { 
+        stage ("Build Dashboard Image") {
+            customDashboardImage = docker.build("${targetImageName}dashboard:${tagPrefix}-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
+        }
+
+        if ("$tagPrefix" != "pr") {
+            stage ("Push Workers Image") {
+                customWorkersImage.push(); 
+                customWorkersImage.push("latest");
+            }
+
             stage ("Push Dashboard Image") {
-                customImage.push(); 
-                customImage.push("latest");
+                customDashboardImage.push(); 
+                customDashboardImage.push("latest");
             }
         }
     }

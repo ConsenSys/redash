@@ -1,6 +1,5 @@
 FROM redash/base:latest
 
-RUN env
 # We first copy only the requirements file, to avoid rebuilding on every file
 # change.
 COPY requirements.txt requirements_dev.txt requirements_all_ds.txt ./
