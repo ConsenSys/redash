@@ -4,7 +4,7 @@ import json
 
 import click
 from flask.cli import FlaskGroup, run_command
-from flask import current_app
+from flask import current_app, url_for
 
 from redash import create_app, settings, __version__
 from redash.cli import users, groups, database, data_sources, organization
@@ -89,3 +89,10 @@ def ipython():
     ctx.update(app.make_shell_context())
 
     IPython.embed(banner1=banner, user_ns=ctx)
+
+
+@manager.command()
+def list_routes():
+    from redash.wsgi import app
+    for r in app.url_map.iter_rules():
+        print(r)
