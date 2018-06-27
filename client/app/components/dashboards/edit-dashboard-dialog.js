@@ -23,17 +23,16 @@ const EditDashboardDialog = {
 
       this.saveInProgress = true;
 
-      $http
-        .post('api/dashboards', {
-          name: this.dashboard.name,
-        })
-        .success((response) => {
-          this.close();
-          $location
-            .path(`/dashboard/${response.slug}`)
-            .search('edit')
-            .replace();
-        });
+      // eslint-disable-next-line no-undef
+      $http.post(`${API_ROOT}/dashboards`, {
+        name: this.dashboard.name,
+      }).success((response) => {
+        this.close();
+        $location
+          .path(`/dashboard/${response.slug}`)
+          .search('edit')
+          .replace();
+      });
       Events.record('create', 'dashboard');
     };
   },

@@ -68,11 +68,14 @@ function User($resource, $http, $sanitize, toastr) {
     save: { method: 'POST', transformResponse },
     query: { method: 'GET', isArray: true, transformResponse },
     delete: { method: 'DELETE', transformResponse },
-    disable: { method: 'POST', url: 'api/users/:id/disable', transformResponse },
-    enable: { method: 'DELETE', url: 'api/users/:id/disable', transformResponse },
+    // eslint-disable-next-line no-undef
+    disable: { method: 'POST', url: `${API_ROOT}/users/:id/disable`, transformResponse },
+    // eslint-disable-next-line no-undef
+    enable: { method: 'DELETE', url: `${API_ROOT}/users/:id/disable`, transformResponse },
   };
 
-  const UserResource = $resource('api/users/:id', { id: '@id' }, actions);
+  // eslint-disable-next-line no-undef
+  const UserResource = $resource(`${API_ROOT}/users/:id`, { id: '@id' }, actions);
 
   UserResource.enableUser = user => enableUser(user, toastr, $sanitize);
   UserResource.disableUser = user => disableUser(user, toastr, $sanitize);

@@ -27,14 +27,16 @@ function GroupCtrl($scope, $routeParams, $http, currentUser, Events, Group, User
     // Clear selection, to clear up the input control.
     $scope.newMember.selected = undefined;
 
-    $http.post(`api/groups/${$routeParams.groupId}/members`, { user_id: user.id }).success(() => {
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/groups/${$routeParams.groupId}/members`, { user_id: user.id }).success(() => {
       $scope.members.unshift(user);
       user.alreadyMember = true;
     });
   };
 
   $scope.removeMember = (member) => {
-    $http.delete(`api/groups/${$routeParams.groupId}/members/${member.id}`).success(() => {
+    // eslint-disable-next-line no-undef
+    $http.delete(`${API_ROOT}/groups/${$routeParams.groupId}/members/${member.id}`).success(() => {
       $scope.members = $scope.members.filter(m => m !== member);
 
       if ($scope.foundUsers) {

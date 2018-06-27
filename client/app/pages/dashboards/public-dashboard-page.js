@@ -29,7 +29,8 @@ export default function init(ngModule) {
     'ngInject';
 
     const token = $route.current.params.token;
-    return $http.get(`api/dashboards/public/${token}`).then(response => response.data);
+    // eslint-disable-next-line no-undef
+    return $http.get(`${API_ROOT}/dashboards/public/${token}`).then(response => response.data);
   }
 
   function session($http, $route, Auth) {

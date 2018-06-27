@@ -4,12 +4,12 @@
   "description": "The frontend part of Redash.",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server",
-    "dev": "REDASH_BACKEND=https://dev.redashapp.com npm start",
-    "build": "rm -rf ./client/dist/ && NODE_ENV=production webpack",
-    "watch": "webpack --watch --progress --colors -d",
-    "analyze": "rm -rf ./client/dist/ && BUNDLE_ANALYZER=on webpack",
-    "analyze:build": "rm -rf ./client/dist/ && NODE_ENV=production BUNDLE_ANALYZER=on webpack"
+    "start": ". .env ; webpack-dev-server",
+    "dev": ". .env ; REDASH_BACKEND=https://dev.redashapp.com npm start",
+    "build": ". .env ; rm -rf ./client/dist/ && NODE_ENV=production webpack",
+    "watch": ". .env ; webpack --watch --progress --colors -d",
+    "analyze": ". .env ; rm -rf ./client/dist/ && BUNDLE_ANALYZER=on webpack",
+    "analyze:build": ". .env ; rm -rf ./client/dist/ && NODE_ENV=production BUNDLE_ANALYZER=on webpack"
   },
   "repository": {
     "type": "git",

@@ -171,18 +171,21 @@ class Parameters {
 
 function QueryResource($resource, $http, $q, $location, currentUser, QueryResult) {
   const Query = $resource(
-    'api/queries/:id',
+    // eslint-disable-next-line no-undef
+    `${API_ROOT}/queries/:id`,
     { id: '@id' },
     {
       search: {
         method: 'get',
         isArray: true,
-        url: 'api/queries/search',
+        // eslint-disable-next-line no-undef
+        url: `${API_ROOT}/queries/search`,
       },
       recent: {
         method: 'get',
         isArray: true,
-        url: 'api/queries/recent',
+        // eslint-disable-next-line no-undef
+        url: `${API_ROOT}/queries/recent`,
       },
       query: {
         isArray: false,
@@ -190,18 +193,21 @@ function QueryResource($resource, $http, $q, $location, currentUser, QueryResult
       myQueries: {
         method: 'get',
         isArray: false,
-        url: 'api/queries/my',
+        // eslint-disable-next-line no-undef
+        url: `${API_ROOT}/queries/my`,
       },
       fork: {
         method: 'post',
         isArray: false,
-        url: 'api/queries/:id/fork',
+        // eslint-disable-next-line no-undef
+        url: `${API_ROOT}/queries/:id/fork`,
         params: { id: '@id' },
       },
       resultById: {
         method: 'get',
         isArray: false,
-        url: 'api/queries/:id/results.json',
+        // eslint-disable-next-line no-undef
+        url: `${API_ROOT}/queries/:id/results.json`,
       },
     },
   );
@@ -225,7 +231,8 @@ function QueryResource($resource, $http, $q, $location, currentUser, QueryResult
         return $q.reject(String(err));
       }
     } else if (syntax === 'sql') {
-      return $http.post('api/queries/format', { query }).then(response => response.data.query);
+      // eslint-disable-next-line no-undef
+      return $http.post(`${API_ROOT}/queries/format`, { query }).then(response => response.data.query);
     } else {
       return $q.reject('Query formatting is not supported for your data source syntax.');
     }

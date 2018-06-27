@@ -1,5 +1,6 @@
 function QuerySnippet($resource) {
-  const resource = $resource('api/query_snippets/:id', { id: '@id' });
+  // eslint-disable-next-line no-undef
+  const resource = $resource(`${API_ROOT}/query_snippets/:id`, { id: '@id' });
   resource.prototype.getSnippet = function getSnippet() {
     let name = this.trigger;
     if (this.description !== '') {

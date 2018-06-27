@@ -105,7 +105,8 @@ export default function init(ngModule) {
         types: ($http) => {
           'ngInject';
 
-          return $http.get('api/data_sources/types').then(response => response.data);
+          // eslint-disable-next-line no-undef
+          return $http.get(`${API_ROOT}/data_sources/types`).then(response => response.data);
         },
       },
     },
@@ -122,7 +123,8 @@ export default function init(ngModule) {
         types: ($http) => {
           'ngInject';
 
-          return $http.get('api/data_sources/types').then(response => response.data);
+          // eslint-disable-next-line no-undef
+          return $http.get(`${API_ROOT}/data_sources/types`).then(response => response.data);
         },
       },
     },

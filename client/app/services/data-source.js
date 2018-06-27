@@ -9,7 +9,8 @@ function DataSource($q, $resource, $http) {
       params.refresh = true;
     }
 
-    return $http.get(`api/data_sources/${dataSourceId}/schema`, { params });
+    // eslint-disable-next-line no-undef
+    return $http.get(`${API_ROOT}/data_sources/${dataSourceId}/schema`, { params });
   }
 
   const actions = {
@@ -19,11 +20,13 @@ function DataSource($q, $resource, $http) {
       method: 'POST',
       cache: false,
       isArray: false,
-      url: 'api/data_sources/:id/test',
+      // eslint-disable-next-line no-undef
+      url: `${API_ROOT}/data_sources/:id/test`,
     },
   };
 
-  const DataSourceResource = $resource('api/data_sources/:id', { id: '@id' }, actions);
+    // eslint-disable-next-line no-undef
+  const DataSourceResource = $resource(`${API_ROOT}/data_sources/:id`, { id: '@id' }, actions);
 
   DataSourceResource.prototype.getSchema = function getSchema(refresh = false) {
     if (this._schema === undefined || refresh) {

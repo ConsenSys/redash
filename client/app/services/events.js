@@ -7,7 +7,8 @@ function Events($http) {
     const events = this.events;
     this.events = [];
 
-    $http.post('api/events', events);
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/events`, events);
   }, 1000);
 
   this.record = function record(action, objectType, objectId, additionalProperties) {
