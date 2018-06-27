@@ -5,6 +5,7 @@ import urlparse
 import urllib
 import redis
 import time
+import requests
 
 from flask import Flask, safe_join, request, redirect
 from flask_sslify import SSLify
