@@ -93,11 +93,12 @@ class SlugConverter(BaseConverter):
 
 
 def create_app(load_admin=True):
+    from jose import jwt
     from redash import extensions, handlers
     from redash.handlers.webpack import configure_webpack
     from redash.admin import init_admin
     from redash.models import db
-    from redash.authentication import setup_authentication
+    from redash.authentication import setup_authentication, get_jwt_public_key
     from redash.metrics.request import provision_app
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
