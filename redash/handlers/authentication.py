@@ -113,7 +113,7 @@ def login(org_slug=None):
         return redirect(next_path)
 
     if settings.REMOTE_JWT_LOGIN_ENABLED and request.cookies['jwt']:
-        return remote_jwt_auth(org_slug)
+        return remote_jwt_auth.login(org_slug)
 
     if request.method == 'POST':
         try:
