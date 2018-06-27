@@ -93,16 +93,17 @@ class SlugConverter(BaseConverter):
 
 
 def create_app(load_admin=True):
+    from jose import jwt
     from redash import extensions, handlers
     from redash.handlers.webpack import configure_webpack
     from redash.admin import init_admin
     from redash.models import db
-    from redash.authentication import setup_authentication
+    from redash.authentication import setup_authentication, get_jwt_public_key
     from redash.metrics.request import provision_app
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
-            def process_response(self, response):
+            def process_response(self, response, *args, **kwargs):
                 jwttoken = request.cookies.get('jwt', None)
 
                 if jwttoken is not None:
@@ -121,7 +122,7 @@ def create_app(load_admin=True):
                             return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
                     elif now > exp:
                         return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
-                return response
+                return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
         app = JwtFlask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,

@@ -5,6 +5,8 @@ import hmac
 import time
 import logging
 
+from jose import jwt
+
 from flask import redirect, request, jsonify, url_for
 
 from redash import models, settings
@@ -19,7 +21,7 @@ _jwtPublicKey = None
 def get_jwt_public_key():
     global _jwtPublicKey
     if not _jwtPublicKey:
-        keyFile = open(settings.JWT_AUTH_PUBLIC_KEY_FILE, 'r')
+        keyFile = open(settings.REMOTE_JWT_PUBLIC_KEY_FILE, 'r')
         _jwtPublicKey = keyFile.read()
     return _jwtPublicKey
 
