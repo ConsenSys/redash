@@ -103,7 +103,7 @@ def create_app(load_admin=True):
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
-            def process_response(self, response):
+            def process_response(self, response, *args, **kwargs):
                 jwttoken = request.cookies.get('jwt', None)
 
                 if jwttoken is not None:
@@ -122,7 +122,7 @@ def create_app(load_admin=True):
                             return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
                     elif now > exp:
                         return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
-                return response
+                return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
         app = JwtFlask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,
