@@ -5,7 +5,6 @@ import hmac
 import time
 import logging
 
-
 from jose import jwt
 from flask import redirect, request, jsonify, url_for
 
