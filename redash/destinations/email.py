@@ -35,7 +35,7 @@ class Email(BaseDestination):
             logging.warning("No emails given. Skipping send.")
 
         html = """
-        Check <a href="{host}/alerts/{alert_id}">alert</a> / check <a href="{host}/queries/{query_id}">query</a>.
+        Check <a href="./{host}/alerts/{alert_id}">alert</a> / check <a href="./{host}/queries/{query_id}">query</a>.
         """.format(host=host, alert_id=alert.id, query_id=query.id)
         logging.debug("Notifying: %s", recipients)
 

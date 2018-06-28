@@ -52,7 +52,7 @@ export function renderLink(column, row) {
 
   const result = [];
   if (url !== '') {
-    result.push('<a href="' + url + '"');
+    result.push('<a href="./' + url + '"');
     if (title !== '') {
       result.push('title="' + title + '"');
     }

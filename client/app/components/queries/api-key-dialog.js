@@ -22,8 +22,10 @@ const ApiKeyDialog = {
     'ngInject';
 
     this.apiKey = this.resolve.query.api_key;
-    this.csvUrl = `${clientConfig.basePath}api/queries/${this.resolve.query.id}/results.csv?api_key=${this.apiKey}`;
-    this.jsonUrl = `${clientConfig.basePath}api/queries/${this.resolve.query.id}/results.json?api_key=${this.apiKey}`;
+    // eslint-disable-next-line no-undef
+    this.csvUrl = `${clientConfig.basePath}${API_ROOT}/queries/${this.resolve.query.id}/results.csv?api_key=${this.apiKey}`;
+    // eslint-disable-next-line no-undef
+    this.jsonUrl = `${clientConfig.basePath}${API_ROOT}/queries/${this.resolve.query.id}/results.json?api_key=${this.apiKey}`;
   },
   bindings: {
     resolve: '<',

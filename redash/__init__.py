@@ -101,6 +101,9 @@ def create_app(load_admin=True):
     from redash.models import db
     from redash.authentication import setup_authentication, get_jwt_public_key
     from redash.metrics.request import provision_app
+    from jose import jwt
+
+    os.environ['SCRIPT_NAME'] = settings.ROOT_UI_URL
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
@@ -117,7 +120,7 @@ def create_app(load_admin=True):
                     if iat + 1200 < now <= exp:
                         email = jwt_decoded.get('email', None)
                         resp = requests.post(settings.REMOTE_JWT_REFRESH_PROVIDER, headers={ 'Authorization' : 'Bearer ' + jwttoken }, data={ 'email': email })
-                        if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
+                        if resp.status_code < 300 and resp.data.get('jwt', None) is not None:
                             response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
                         elif resp.status_code == 401:
                             return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '?orig_url=/analytics')
@@ -128,16 +131,18 @@ def create_app(load_admin=True):
         app = JwtFlask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,
                 static_folder=settings.STATIC_ASSETS_PATH,
-                static_path='/static')
+                static_url_path=settings.ROOT_UI_URL + '/static')
     else:
         app = Flask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,
                 static_folder=settings.STATIC_ASSETS_PATH,
-                static_path='/static')
+                static_url_path=settings.ROOT_UI_URL + '/static')
 
     # Make sure we get the right referral address even behind proxies like nginx.
     app.wsgi_app = ProxyFix(app.wsgi_app, settings.PROXIES_COUNT)
     app.url_map.converters['org_slug'] = SlugConverter
+    app.config["APPLICATION_ROOT"] = settings.ROOT_UI_URL
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     if settings.ENFORCE_HTTPS:
         SSLify(app, skips=['ping'])

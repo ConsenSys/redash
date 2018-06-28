@@ -47,14 +47,16 @@ function AuthService($window, $location, $q, $http) {
       }
 
       this.setApiKey(null);
-      return $http.get('api/session').then((response) => {
+      // eslint-disable-next-line no-undef
+      return $http.get(`${API_ROOT}/session`).then((response) => {
         storeSession(response.data);
         return session;
       });
     },
     loadConfig() {
       logger('Loading config');
-      return $http.get('/api/config').then((response) => {
+      // eslint-disable-next-line no-undef
+      return $http.get(`${API_ROOT}/config`).then((response) => {
         storeSession({ client_config: response.data.client_config, user: { permissions: [] } });
         return response.data;
       });

@@ -12,8 +12,8 @@ function cancelQueryButton() {
       $scope.inProgress = false;
 
       $scope.cancelExecution = () => {
-        $http.delete(`api/jobs/${$scope.taskId}`).success(() => {
-        });
+        // eslint-disable-next-line no-undef
+        $http.delete(`${API_ROOT}/jobs/${$scope.taskId}`).success(() => {});
 
         let queryId = $scope.queryId;
         if ($scope.queryId === 'adhoc') {

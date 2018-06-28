@@ -1,4 +1,5 @@
 import os
+import time
 
 from flask import current_app, render_template, safe_join, send_file
 from werkzeug.exceptions import NotFound
@@ -13,6 +14,9 @@ from redash.handlers.base import org_scoped_rule
 def render_index():
     if settings.MULTI_ORG:
         response = render_template("multi_org.html", base_href=base_href())
+    elif settings.ROOT_UI_URL is not '':
+        response = render_template("multi_org.html", base_href=settings.ROOT_UI_URL, something=time.time())
+        print response
     else:
         full_path = safe_join(settings.STATIC_ASSETS_PATH, 'index.html')
         response = send_file(full_path, **dict(cache_timeout=0, conditional=True))

@@ -11,7 +11,9 @@ const LessPluginAutoPrefix = require("less-plugin-autoprefix");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const path = require("path");
 
-const redashBackend = process.env.REDASH_BACKEND || "http://localhost:5000";
+const apiRoot = process.env.REDASH_ROOT_API_URL || '/api';
+const uiRoot = process.env.REDASH_ROOT_UI_URL || '';
+const redashBackend = (process.env.REDASH_BACKEND || "http://localhost:7000") + uiRoot;
 
 const basePath = fs.realpathSync(path.join(__dirname, "client"));
 const appPath = fs.realpathSync(path.join(__dirname, "client", "app"));
@@ -24,7 +26,7 @@ const config = {
   output: {
     path: path.join(basePath, "./dist"),
     filename: "[name].js",
-    publicPath: "/static/"
+    publicPath: uiRoot + "/static/"
   },
   resolve: {
     alias: {
@@ -39,7 +41,8 @@ const config = {
   plugins: [
     new WebpackBuildNotifierPlugin({ title: "Redash" }),
     new webpack.DefinePlugin({
-      ON_TEST: process.env.NODE_ENV === "test"
+      ON_TEST: process.env.NODE_ENV === "test",
+      API_ROOT: JSON.stringify(apiRoot)
     }),
     // Enforce angular to use jQuery instead of jqLite
     new webpack.ProvidePlugin({ "window.jQuery": "jquery" }),
@@ -178,13 +181,13 @@ const config = {
   },
   devServer: {
     inline: true,
-    index: "/static/index.html",
+    index: uiRoot + "/static/index.html",
     historyApiFallback: {
-      index: "/static/index.html",
-      rewrites: [{ from: /./, to: "/static/index.html" }]
+      index: uiRoot + "/static/index.html",
+      rewrites: [{ from: /./, to: uiRoot + "/static/index.html" }]
     },
     contentBase: false,
-    publicPath: "/static/",
+    publicPath: uiRoot + "/static/",
     proxy: [
       {
         context: ["/login", "/logout", "/invite", "/setup", "/status.json", "/api", "/oauth"],
@@ -195,7 +198,7 @@ const config = {
       {
         context: path => {
           // CSS/JS for server-rendered pages should be served from backend
-          return /^\/static\/[a-z]+\.[0-9a-fA-F]+\.(css|js)$/.test(path);
+          return new RegExp("^" + uiRoot.replace('/', '\/') + "\/static\/[a-z]+\.[0-9a-fA-F]+\.(css|js)$").test(path);
         },
         target: redashBackend + "/",
         changeOrigin: true,

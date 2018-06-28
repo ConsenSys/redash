@@ -1,5 +1,6 @@
 import hashlib
 import logging
+import redash
 
 from flask import abort, flash, redirect, render_template, request, url_for
 
@@ -9,7 +10,7 @@ from redash.authentication import current_org, get_login_url, remote_jwt_auth
 from redash.authentication.account import (BadSignature, SignatureExpired,
                                            send_password_reset_email,
                                            validate_token)
-from redash.handlers import routes
+from redash.handlers import routes, restful
 from redash.handlers.base import json_response, org_scoped_rule
 from redash.version_check import get_latest_version
 from sqlalchemy.orm.exc import NoResultFound
@@ -112,7 +113,7 @@ def login(org_slug=None):
     if current_user.is_authenticated:
         return redirect(next_path)
 
-    if settings.REMOTE_JWT_LOGIN_ENABLED and request.cookies['jwt']:
+    if settings.REMOTE_JWT_LOGIN_ENABLED and (request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')):
         return remote_jwt_auth.login(org_slug)
 
     if request.method == 'POST':
@@ -196,7 +197,8 @@ def client_config():
     return client_config
 
 
-@routes.route('/api/config', methods=['GET'])
+# @routes.route(settings.ROOT_API_URL + '/config', methods=['GET'])
+@restful.route('/config', methods=['GET'])
 def config(org_slug=None):
     return json_response({
         'org_slug': current_org.slug,
@@ -204,7 +206,8 @@ def config(org_slug=None):
     })
 
 
-@routes.route(org_scoped_rule('/api/session'), methods=['GET'])
+# @routes.route(settings.ROOT_API_URL + org_scoped_rule('/session'), methods=['GET'])
+@restful.route(org_scoped_rule('/session'), methods=['GET'])
 @login_required
 def session(org_slug=None):
     if current_user.is_api_user():

@@ -103,7 +103,8 @@ function UserCtrl(
 
   $scope.sendPasswordReset = () => {
     $scope.disablePasswordResetButton = true;
-    $http.post(`api/users/${$scope.user.id}/reset_password`).success((data) => {
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/users/${$scope.user.id}/reset_password`).success((data) => {
       $scope.disablePasswordResetButton = false;
       $scope.passwordResetLink = absoluteUrl(data.reset_link);
     });

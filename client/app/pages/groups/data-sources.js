@@ -20,7 +20,8 @@ function GroupDataSourcesCtrl($scope, $routeParams, $http, Events, Group, DataSo
     // Clear selection, to clear up the input control.
     $scope.newDataSource.selected = undefined;
 
-    $http.post(`api/groups/${$routeParams.groupId}/data_sources`, { data_source_id: dataSource.id }).success(() => {
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/groups/${$routeParams.groupId}/data_sources`, { data_source_id: dataSource.id }).success(() => {
       dataSource.view_only = false;
       $scope.dataSources.unshift(dataSource);
 
@@ -31,13 +32,15 @@ function GroupDataSourcesCtrl($scope, $routeParams, $http, Events, Group, DataSo
   };
 
   $scope.changePermission = (dataSource, viewOnly) => {
-    $http.post(`api/groups/${$routeParams.groupId}/data_sources/${dataSource.id}`, { view_only: viewOnly }).success(() => {
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/groups/${$routeParams.groupId}/data_sources/${dataSource.id}`, { view_only: viewOnly }).success(() => {
       dataSource.view_only = viewOnly;
     });
   };
 
   $scope.removeDataSource = (dataSource) => {
-    $http.delete(`api/groups/${$routeParams.groupId}/data_sources/${dataSource.id}`).success(() => {
+    // eslint-disable-next-line no-undef
+    $http.delete(`${API_ROOT}/groups/${$routeParams.groupId}/data_sources/${dataSource.id}`).success(() => {
       $scope.dataSources = $scope.dataSources.filter(ds => dataSource !== ds);
     });
   };

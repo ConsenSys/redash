@@ -53,8 +53,10 @@ function addPointToSeries(point, seriesCollection, seriesName) {
 
 
 function QueryResultService($resource, $timeout, $q) {
-  const QueryResultResource = $resource('api/query_results/:id', { id: '@id' }, { post: { method: 'POST' } });
-  const Job = $resource('api/jobs/:id', { id: '@id' });
+  // eslint-disable-next-line no-undef
+  const QueryResultResource = $resource(`${API_ROOT}/query_results/:id`, { id: '@id' }, { post: { method: 'POST' } });
+  // eslint-disable-next-line no-undef
+  const Job = $resource(`${API_ROOT}/jobs/:id`, { id: '@id' });
   const statuses = {
     1: 'waiting',
     2: 'processing',
@@ -468,7 +470,8 @@ function QueryResultService($resource, $timeout, $q) {
     }
 
     getLink(queryId, fileType, apiKey) {
-      let link = `api/queries/${queryId}/results/${this.getId()}.${fileType}`;
+      // eslint-disable-next-line no-undef
+      let link = `${API_ROOT}/queries/${queryId}/results/${this.getId()}.${fileType}`;
       if (apiKey) {
         link = `${link}?api_key=${apiKey}`;
       }

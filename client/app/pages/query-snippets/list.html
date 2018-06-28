@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
           <p>
-            <a href="query_snippets/new" class="btn btn-default"><i class="fa fa-plus"></i> New Snippet</a>
+            <a href="./query_snippets/new" class="btn btn-default"><i class="fa fa-plus"></i> New Snippet</a>
           </p>
 
           <table class="table table-border table-hover">
@@ -18,7 +18,7 @@
             <tbody>
               <tr ng-repeat="snippet in $ctrl.snippets.getPageRows()">
                 <td>
-                  <a href="query_snippets/{{snippet.id}}">{{snippet.trigger}}</a>
+                  <a href="./query_snippets/{{snippet.id}}">{{snippet.trigger}}</a>
                 </td>
                 <td>
                   {{snippet.description}}

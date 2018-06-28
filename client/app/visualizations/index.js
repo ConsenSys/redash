@@ -50,7 +50,8 @@ function VisualizationProvider() {
   };
 
   this.$get = ($resource) => {
-    const Visualization = $resource('api/visualizations/:id', { id: '@id' });
+    // eslint-disable-next-line no-undef
+    const Visualization = $resource(`${API_ROOT}/visualizations/:id`, { id: '@id' });
     Visualization.visualizations = this.visualizations;
     Visualization.visualizationTypes = this.visualizationTypes;
     Visualization.renderVisualizationsTemplate = this.getSwitchTemplate('renderTemplate');

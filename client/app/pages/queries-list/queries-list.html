@@ -22,8 +22,8 @@
         <tbody>
           <tr ng-repeat="query in $ctrl.paginator.getPageRows()">
             <td>
-              <a href="queries/{{query.id}}">{{query.name}}</a>
-              <span class="label label-default" ng-if="query.is_draft">Unpublished</span>
+              <a href="./queries/{{query.id}}">{{query.name}}</a>
+              <span class="label label-default pull-right" ng-if="query.is_draft">Unpublished</span>
             </td>
             <td>
               <img ng-src="{{ query.user.profile_image_url }}" class="profile__image_thumb" />

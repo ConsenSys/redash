@@ -52,6 +52,7 @@ def login(org_slug=None):
         resp.set_cookie('jwt', jwttoken, secure=True, httponly=True)
 
         return resp
-    except jwt.JWTError:
+    except jwt.JWTError, jwt.ExpiredSignatureError:
         logger.error("Remote user attempted entry using key with invalid signature")
+        logger.info(settings.REMOTE_JWT_EXPIRED_ENDPOINT)
         return redirect(url_for('redash.index', next=next_path, org_slug=org_slug))
