@@ -4,9 +4,9 @@
 
   <div class="bg-white tiled">
     <ul class="tab-nav">
-      <li><a href="admin/status">System Status</a></li>
-      <li class="active"><a href="admin/queries/tasks">Queries Queue</a></li>
-      <li><a href="admin/queries/outdated">Outdated Queries</a></li>
+      <li><a href="./admin/status">System Status</a></li>
+      <li class="active"><a href="./admin/queries/tasks">Queries Queue</a></li>
+      <li><a href="./admin/queries/outdated">Outdated Queries</a></li>
     </ul>
 
     <ul class="tab-nav">
@@ -35,7 +35,7 @@
         <td>{{row.data_source_id}}</td>
         <td>{{row.username}}</td>
         <td>{{row.state}} <span ng-if="row.state === 'failed'" uib-popover="{{row.error}}" popover-trigger="mouseenter" class="zmdi zmdi-help"></span></td>
-        <td><a href="queries/{{row.query_id}}">{{row.query_id}}</a></td>
+        <td><a href="./queries/{{row.query_id}}">{{row.query_id}}</a></td>
         <td>{{row.query_hash}}</td>
         <td>{{row.run_time | durationHumanize}}</td>
         <td>{{row.created_at | toMilliseconds | dateTime }}</td>

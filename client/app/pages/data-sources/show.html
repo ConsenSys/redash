@@ -13,13 +13,13 @@
         </div>
 
         <div class="col-xs-12 col-sm-4 text-center">
-          <img ng-src="/static/images/db-logos/{{dataSource.type}}.png" alt="{{type.name}}" width="64">
+          <img ng-src="./static/images/db-logos/{{dataSource.type}}.png" alt="{{type.name}}" width="64">
           <h3>{{type.name}}</h3>
         </div>
 
         <div class="col-xs-12 col-sm-4">
           <p class="needhelp text-right text-center-xs" ng-if="helpLinks[type.type]">
-            <a ng-href="{{helpLinks[type.type]}}" target="_blank" >
+            <a ng-href="./{{helpLinks[type.type]}}" target="_blank" >
               Help <span class="hidden-xs">setting up {{type.name}}</span> <i class="fa fa-external-link" aria-hidden="true"></i>
             </a>
           </p>
