@@ -142,7 +142,7 @@ def log_user_logged_in(app, user):
 
 @login_manager.unauthorized_handler
 def redirect_to_login():
-    if request.is_xhr or '/api/' in request.path:
+    if request.is_xhr or settings.ROOT_API_URL + '/' in request.path:
         response = jsonify({'message': "Couldn't find resource. Please login and try again."})
         response.status_code = 404
         return response
@@ -172,11 +172,11 @@ def setup_authentication(app):
     login_manager.anonymous_user = models.AnonymousUser
 
     app.secret_key = settings.COOKIE_SECRET
-    app.register_blueprint(google_oauth.blueprint)
-    app.register_blueprint(saml_auth.blueprint)
-    app.register_blueprint(remote_user_auth.blueprint)
-    app.register_blueprint(remote_jwt_auth.blueprint)
-    app.register_blueprint(ldap_auth.blueprint)
+    app.register_blueprint(google_oauth.blueprint, url_prefix=settings.ROOT_UI_URL)
+    app.register_blueprint(saml_auth.blueprint, url_prefix=settings.ROOT_UI_URL)
+    app.register_blueprint(remote_user_auth.blueprint, url_prefix=settings.ROOT_UI_URL)
+    app.register_blueprint(remote_jwt_auth.blueprint, url_prefix=settings.ROOT_UI_URL)
+    app.register_blueprint(ldap_auth.blueprint, url_prefix=settings.ROOT_UI_URL)
 
     user_logged_in.connect(log_user_logged_in)
 

@@ -244,3 +244,7 @@ REMOTE_RESOURCE_VALIDATOR = os.environ.get("REDASH_REMOTE_RESOURCE_VALIDATOR", '
 # Where the values are put can be overwritten with '<request>.*=<value.value>' where <request> is one of 'headers', 'cookies', 'data'
 # Examples: 'headers.Authorization' equals 'headers.Authorization=headers.Authorization' and 'data.email=user.email,headers.Authorization,cookies.jwt' is valid
 REMOTE_RESOURCE_CREDENTIAL = os.environ.get("REDASH_REMOTE_RESOURCE_CREDENTIAL", 'headers.Authorization')
+
+# Base Url and Application Root
+ROOT_UI_URL = os.environ.get("REDASH_ROOT_UI_URL", "")
+ROOT_API_URL = os.environ.get("REDASH_ROOT_API_URL", "/api")
