@@ -32,7 +32,7 @@ types_map = {
 def list_all_ns_metrics(client, ns):
     options = {}
 
-    if ns is not None:
+    if ns is not None and ns != '*':
         options['Namespace'] = ns
 
     curr = client.list_metrics(**options)
@@ -57,7 +57,7 @@ class CloudWatch(BaseQueryRunner):
             extended_columns = [(e, TYPE_FLOAT) for e in json_query.get('ExtendedStatistics', [])]
             columns = self.fetch_columns([('Timestamp', TYPE_DATETIME)] + statistic_columns + extended_columns)
             rows = response.get('Datapoints', [])
-
+            
             data = { 'columns': columns, 'rows': rows }
             error = None
             json_data = json.dumps(data, cls=JSONEncoder)
@@ -155,9 +155,9 @@ class CloudWatch(BaseQueryRunner):
                     "default": "*"
                 }
             },
-            "required": ["id", "key", "region"],
+            "required": ["id", "key", "region", "namespaces"],
             "secret": ["key"],
-            "order": ["id", "key", "region", "customMetrics"]
+            "order": ["id", "key", "region", "namespaces"]
         }
 
     def _get_client(self):
