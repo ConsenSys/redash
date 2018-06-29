@@ -108,6 +108,7 @@ def create_app(load_admin=True):
                 jwttoken = request.cookies.get('jwt', None)
 
                 if jwttoken is not None:
+                    print request, request.referrer
                     try:
                         public_key = get_jwt_public_key()
                         jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
@@ -121,11 +122,11 @@ def create_app(load_admin=True):
                             if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
                                 response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
                             elif resp.status_code == 401:
-                                return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '/analytics')
+                                raise jwt.ExpiredSignatureError()
                         elif now > exp:
-                            return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '/analytics')
+                            raise jwt.ExpiredSignatureError()
                     except jwt.ExpiredSignatureError:
-                        return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + '/analytics')
+                        return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer))
                 return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
         app = JwtFlask(__name__,
