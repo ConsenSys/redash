@@ -4,9 +4,9 @@
 
   <div class="bg-white tiled">
     <ul class="tab-nav">
-      <li><a href="admin/status">System Status</a></li>
-      <li><a href="admin/queries/tasks">Queries Queue</a></li>
-      <li class="active"><a href="admin/queries/outdated">Outdated Queries</a></li>
+      <li><a href="./admin/status">System Status</a></li>
+      <li><a href="./admin/queries/tasks">Queries Queue</a></li>
+      <li class="active"><a href="./admin/queries/outdated">Outdated Queries</a></li>
     </ul>
 
     <div class="">
@@ -28,7 +28,7 @@
             {{row.data_source_id}}
           </td>
           <td>
-            <a ng-href="queries/{{row.id}}">{{row.name}}</a>
+            <a ng-href="./queries/{{row.id}}">{{row.name}}</a>
           </td>
           <td>{{row.user.name}}</td>
           <td>{{row.runtime | durationHumanize}}</td>

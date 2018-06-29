@@ -10,7 +10,7 @@ from sqlalchemy.orm.exc import StaleDataError
 from redash import models, settings
 from redash.remote_resource import remote_resource_restriction
 from redash.handlers.base import (BaseResource, get_object_or_404,
-                                  org_scoped_rule, paginate, routes)
+                                  org_scoped_rule, paginate, routes, restful)
 from redash.handlers.query_results import run_query
 from redash.permissions import (can_modify, not_view_only, require_access,
                                 require_admin_or_owner,
@@ -19,7 +19,8 @@ from redash.permissions import (can_modify, not_view_only, require_access,
 from redash.utils import collect_parameters_from_request
 
 
-@routes.route(org_scoped_rule('/api/queries/format'), methods=['POST'])
+# @routes.route(settings.ROOT_API_URL + org_scoped_rule('/queries/format'), methods=['POST'])
+@restful.route(org_scoped_rule('/queries/format'), methods=['POST'])
 @login_required
 def format_sql_query(org_slug=None):
     """

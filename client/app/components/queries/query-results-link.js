@@ -15,11 +15,13 @@ function queryResultLink() {
         } else {
           let url;
           if (scope.query.id) {
-            url = `api/queries/${scope.query.id}/results/${scope.queryResult.getId()}.${fileType}${scope.embed
+            // eslint-disable-next-line no-undef
+            url = `${API_ROOT}/queries/${scope.query.id}/results/${scope.queryResult.getId()}.${fileType}${scope.embed
               ? `?api_key=${scope.apiKey}`
               : ''}`;
           } else {
-            url = `api/query_results/${scope.queryResult.getId()}.${fileType}`;
+            // eslint-disable-next-line no-undef
+            url = `${API_ROOT}/query_results/${scope.queryResult.getId()}.${fileType}`;
           }
           element.attr('href', url);
           element.attr(

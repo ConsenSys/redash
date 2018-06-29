@@ -4,7 +4,8 @@ function Destination($resource) {
     query: { method: 'GET', cache: false, isArray: true },
   };
 
-  const DestinationResource = $resource('api/destinations/:id', { id: '@id' }, actions);
+  // eslint-disable-next-line no-undef
+  const DestinationResource = $resource(`${API_ROOT}/destinations/:id`, { id: '@id' }, actions);
 
   return DestinationResource;
 }

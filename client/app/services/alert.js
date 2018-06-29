@@ -15,7 +15,8 @@ function Alert($resource, $http) {
       }].concat($http.defaults.transformRequest),
     },
   };
-  const resource = $resource('api/alerts/:id', { id: '@id' }, actions);
+  // eslint-disable-next-line no-undef
+  const resource = $resource(`${API_ROOT}/alerts/:id`, { id: '@id' }, actions);
 
   return resource;
 }

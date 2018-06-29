@@ -27,7 +27,8 @@ function TasksCtrl($scope, $location, $http, $timeout, Events) {
   const refresh = () => {
     if ($scope.autoUpdate) {
       $scope.refresh_time = moment().add(1, 'minutes');
-      $http.get('/api/admin/queries/tasks').success((data) => {
+      // eslint-disable-next-line no-undef
+      $http.get(`${API_ROOT}/admin/queries/tasks`).success((data) => {
         $scope.tasks = data;
         this.tasksPaginator.updateRows($scope.tasks[$scope.selectedTab]);
       });

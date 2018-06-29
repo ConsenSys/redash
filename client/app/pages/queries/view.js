@@ -483,7 +483,8 @@ function QueryViewCtrl(
     $uibModal.open({
       component: 'permissionsEditor',
       resolve: {
-        aclUrl: { url: `api/queries/${$routeParams.queryId}/acl` },
+        // eslint-disable-next-line no-undef
+        aclUrl: { url: `${API_ROOT}/queries/${$routeParams.queryId}/acl` },
       },
     });
   };

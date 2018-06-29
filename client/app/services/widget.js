@@ -138,7 +138,8 @@ function WidgetFactory($http, Query, Visualization, dashboardGridOptions) {
     save() {
       const data = pick(this, 'options', 'text', 'id', 'width', 'dashboard_id', 'visualization_id');
 
-      let url = 'api/widgets';
+      // eslint-disable-next-line no-undef
+      let url = `${API_ROOT}/widgets`;
       if (this.id) {
         url = `${url}/${this.id}`;
       }
@@ -153,7 +154,8 @@ function WidgetFactory($http, Query, Visualization, dashboardGridOptions) {
     }
 
     delete() {
-      const url = `api/widgets/${this.id}`;
+      // eslint-disable-next-line no-undef
+      const url = `${API_ROOT}/widgets/${this.id}`;
       return $http.delete(url);
     }
   }

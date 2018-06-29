@@ -8,7 +8,7 @@ from flask import request
 from .authentication import current_org
 from flask_login import current_user, login_required
 from flask_restful import abort
-from redash import models, utils
+from redash import models, utils, settings
 from redash.handlers import routes
 from redash.handlers.base import (get_object_or_404, org_scoped_rule,
                                   record_event)

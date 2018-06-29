@@ -65,14 +65,16 @@ function Dashboard($resource, $http, currentUser, Widget, dashboardGridOptions) 
     return data;
   });
 
-  const resource = $resource('api/dashboards/:slug', { slug: '@slug' }, {
+  // eslint-disable-next-line no-undef
+  const resource = $resource(`${API_ROOT}/dashboards/:slug`, { slug: '@slug' }, {
     get: { method: 'GET', transformResponse: transform },
     save: { method: 'POST', transformResponse: transform },
     query: { method: 'GET', isArray: true, transformResponse: transform },
     recent: {
       method: 'get',
       isArray: true,
-      url: 'api/dashboards/recent',
+      // eslint-disable-next-line no-undef
+      url: `${API_ROOT}/dashboards/recent`,
       transformResponse: transform,
     },
   });

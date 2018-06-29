@@ -5,12 +5,14 @@ function OrganizationSettingsCtrl($http, toastr, clientConfig, Events) {
   Events.record('view', 'page', 'org_settings');
 
   this.settings = {};
-  $http.get('api/settings/organization').then((response) => {
+  // eslint-disable-next-line no-undef
+  $http.get(`${API_ROOT}/settings/organization`).then((response) => {
     this.settings = response.data.settings;
   });
 
   this.update = (key) => {
-    $http.post('api/settings/organization', { [key]: this.settings[key] }).then((response) => {
+    // eslint-disable-next-line no-undef
+    $http.post(`${API_ROOT}/settings/organization`, { [key]: this.settings[key] }).then((response) => {
       this.settings = response.data.settings;
       toastr.success('Settings changes saved.');
 

@@ -101,6 +101,9 @@ def create_app(load_admin=True):
     from redash.models import db
     from redash.authentication import setup_authentication, get_jwt_public_key
     from redash.metrics.request import provision_app
+    from jose import jwt
+
+    os.environ['SCRIPT_NAME'] = settings.ROOT_UI_URL
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
@@ -108,7 +111,6 @@ def create_app(load_admin=True):
                 jwttoken = request.cookies.get('jwt', None)
 
                 if jwttoken is not None:
-                    print request, request.referrer
                     try:
                         public_key = get_jwt_public_key()
                         jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)
@@ -132,16 +134,18 @@ def create_app(load_admin=True):
         app = JwtFlask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,
                 static_folder=settings.STATIC_ASSETS_PATH,
-                static_path='/static')
+                static_url_path=settings.ROOT_UI_URL + '/static')
     else:
         app = Flask(__name__,
                 template_folder=settings.STATIC_ASSETS_PATH,
                 static_folder=settings.STATIC_ASSETS_PATH,
-                static_path='/static')
+                static_url_path=settings.ROOT_UI_URL + '/static')
 
     # Make sure we get the right referral address even behind proxies like nginx.
     app.wsgi_app = ProxyFix(app.wsgi_app, settings.PROXIES_COUNT)
     app.url_map.converters['org_slug'] = SlugConverter
+    app.config["APPLICATION_ROOT"] = settings.ROOT_UI_URL
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     if settings.ENFORCE_HTTPS:
         SSLify(app, skips=['ping'])

@@ -36,8 +36,10 @@ export default function init(ngModule) {
   function loadData($http, $route, $q, Auth) {
     return session($http, $route, Auth).then(() => {
       const queryId = $route.current.params.queryId;
-      const query = $http.get(`api/queries/${queryId}`).then(response => response.data);
-      const queryResult = $http.get(`api/queries/${queryId}/results.json${location.search}`).then(response => response.data);
+      // eslint-disable-next-line no-undef
+      const query = $http.get(`${API_ROOT}/queries/${queryId}`).then(response => response.data);
+      // eslint-disable-next-line no-undef
+      const queryResult = $http.get(`${API_ROOT}/queries/${queryId}/results.json${location.search}`).then(response => response.data);
       return $q.all([query, queryResult]);
     });
   }

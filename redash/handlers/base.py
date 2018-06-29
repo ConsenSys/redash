@@ -12,6 +12,7 @@ from redash.utils import json_dumps
 from sqlalchemy.orm.exc import NoResultFound
 
 routes = Blueprint('redash', __name__, template_folder=settings.fix_assets_path('templates'))
+restful = Blueprint('redash_restful', __name__, template_folder=settings.fix_assets_path('templates'))
 
 
 class BaseResource(Resource):

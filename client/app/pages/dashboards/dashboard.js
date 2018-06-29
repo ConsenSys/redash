@@ -244,7 +244,8 @@ function DashboardCtrl(
     $uibModal.open({
       component: 'permissionsEditor',
       resolve: {
-        aclUrl: { url: `api/dashboards/${this.dashboard.id}/acl` },
+        // eslint-disable-next-line no-undef
+        aclUrl: { url: `${API_ROOT}/dashboards/${this.dashboard.id}/acl` },
       },
     });
   };
@@ -405,7 +406,8 @@ const ShareDashboardComponent = {
     this.dashboard = this.resolve.dashboard;
 
     this.toggleSharing = () => {
-      const url = `api/dashboards/${this.dashboard.id}/share`;
+      // eslint-disable-next-line no-undef
+      const url = `${API_ROOT}/dashboards/${this.dashboard.id}/share`;
 
       if (!this.dashboard.publicAccessEnabled) {
         // disable
