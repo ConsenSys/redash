@@ -6,6 +6,7 @@ import simplejson
 import json
 import re
 import itertools
+import datetime
 
 import redash.models
 
@@ -50,6 +51,13 @@ class CloudWatch(BaseQueryRunner):
     def run_query(self, query, user):
         try:
             json_query = simplejson.loads(query)
+
+            if json_query.get('StartTime', None) is None:
+                json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(days=7)).isoformat()
+
+            if json_query.get('EndTime', None) is None:
+                json_query['EndTime'] = datetime.datetime.now().isoformat()
+
             client = self._get_client()
             response = client.get_metric_statistics(**json_query)
 
