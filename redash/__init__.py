@@ -119,13 +119,13 @@ def create_app(load_admin=True):
                         if iat + 1200 < now <= exp:
                             email = jwt_decoded.get('email', None)
                             resp = requests.post(settings.REMOTE_JWT_REFRESH_PROVIDER, headers={ 'Authorization' : 'Bearer ' + jwttoken }, data={ 'email': email })
-                            if resp.status_code > 300 and resp.data.get('jwt', None) is not None:
+                            if resp.status_code < 300 and resp.data.get('jwt', None) is not None:
                                 response.set_cookie('jwt', resp.data['jwt'], secure=True, httponly=True)
                             elif resp.status_code == 401:
-                                raise jwt.ExpiredSignatureError()
+                                raise jwt.JWTError('The authentication refresh service has denied a refresh, a login is likely in order.')
                         elif now > exp:
-                            raise jwt.ExpiredSignatureError()
-                    except jwt.ExpiredSignatureError:
+                            raise jwt.JWTClaimsError('The asserted expiration claim has passed.')
+                    except jwt.ExpiredSignatureError, jwt.JWTClaimsError, jwt.JWTError:
                         return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer))
                 return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
