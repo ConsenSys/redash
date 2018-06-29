@@ -125,7 +125,7 @@ def create_app(load_admin=True):
                                 raise jwt.JWTError('The authentication refresh service has denied a refresh, a login is likely in order.')
                         elif now > exp:
                             raise jwt.JWTClaimsError('The asserted expiration claim has passed.')
-                    except jwt.ExpiredSignatureError, jwt.JWTClaimsError, jwt.JWTError:
+                    except (jwt.ExpiredSignatureError, jwt.JWTClaimsError, jwt.JWTError) as e:
                         return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer))
                 return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
