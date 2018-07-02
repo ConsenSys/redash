@@ -5,15 +5,15 @@ from redash.query_runner import BaseQueryRunner, register
 class Url(BaseQueryRunner):
     @classmethod
     def configuration_schema(cls):
-        return {
-            'type': 'object',
-            'properties': {
-                'url': {
-                    'type': 'string',
-                    'title': 'URL base path'
-                }
+        config = super(Url, cls).configuration_schema()
+        config['properties'].update({
+            'url': {
+                'type': 'string',
+                'title': 'URL base path'
             }
-        }
+        })
+
+        return config
 
     @classmethod
     def annotate_query(cls):

@@ -11,7 +11,7 @@ from redash import models, settings
 from redash.remote_resource import remote_resource_restriction
 from redash.handlers.base import (BaseResource, get_object_or_404,
                                   org_scoped_rule, paginate, routes, restful)
-from redash.handlers.query_results import run_query
+from redash.handlers.query_results import run_query, run_query_sync
 from redash.permissions import (can_modify, not_view_only, require_access,
                                 require_admin_or_owner,
                                 require_object_modify_permission,
@@ -289,4 +289,6 @@ class QueryRefreshResource(BaseResource):
         if settings.REMOTE_RESOURCE_RESTRICTION_ENABLED and remote_resource_restriction(parameter_values, self.current_user, request):
             abort(403, message='You have a remote resource restriction on the provided parameters.')
 
+        if query.data_source.query_runner.configuration.get('synchronous', None) is not None:
+            return run_query_sync(query.data_source, parameter_values, query.query_text, query.id)
         return run_query(query.data_source, parameter_values, query.query_text, query.id)

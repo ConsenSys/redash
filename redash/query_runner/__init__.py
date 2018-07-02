@@ -74,7 +74,19 @@ class BaseQueryRunner(object):
 
     @classmethod
     def configuration_schema(cls):
-        return {}
+        return {
+            "type": "object",
+            "properties": {
+                "synchronous": {
+                    "title": "Run Synchronously",
+                    "type": "boolean"
+                },
+                "reuse_headers": {
+                    "title": "Reuse Headers",
+                    "type": "boolean"
+                }
+            }
+        }
 
     @classmethod
     def cacheable(cls):

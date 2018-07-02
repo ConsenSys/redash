@@ -51,7 +51,7 @@ class CloudWatch(BaseQueryRunner):
     def run_query(self, query, user):
         try:
             json_query = simplejson.loads(query)
-
+            
             if json_query.get('StartTime', None) is None:
                 json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(days=7)).isoformat()
 
@@ -120,53 +120,54 @@ class CloudWatch(BaseQueryRunner):
 
     @classmethod
     def configuration_schema(cls):
-        return {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "title": "Access Key ID",
-                    "type": "string"
-                },
-                "key": {
-                    "title": "Secret Access Key",
-                    "type": "string"
-                },
-                "region": {
-                    "title": "Default Region",
-                    "type": "string",
-                    "options": [
-                        "us-east-1",
-                        "us-east-2",
-                        "us-west-1",
-                        "us-west-2",
-                        "ap-northeast-1",
-                        "ap-northeast-2",
-                        "ap-northeast-3",
-                        "ap-south-1",
-                        "ap-southeast-1",
-                        "ap-southeast-2",
-                        "ca-central-1",
-                        "cn-north-1",
-                        "cn-northwest-1",
-                        "eu-central-1",
-                        "eu-west-1",
-                        "eu-west-2",
-                        "eu-west-3",
-                        "sa-east-1",
-                        "us-gov-west-1"
-                    ],
-                    "default": "us-east-1"
-                },
-                "namespaces": {
-                    "title": "Namespace Whitelist",
-                    "type": "string",
-                    "default": "*"
-                }
+        config = super(CloudWatch, cls).configuration_schema()
+        config['properties'].update({
+            "id": {
+                "title": "Access Key ID",
+                "type": "string"
             },
-            "required": ["id", "key", "region", "namespaces"],
-            "secret": ["key"],
-            "order": ["id", "key", "region", "namespaces"]
-        }
+            "key": {
+                "title": "Secret Access Key",
+                "type": "string"
+            },
+            "region": {
+                "title": "Default Region",
+                "type": "string",
+                "options": [
+                    "us-east-1",
+                    "us-east-2",
+                    "us-west-1",
+                    "us-west-2",
+                    "ap-northeast-1",
+                    "ap-northeast-2",
+                    "ap-northeast-3",
+                    "ap-south-1",
+                    "ap-southeast-1",
+                    "ap-southeast-2",
+                    "ca-central-1",
+                    "cn-north-1",
+                    "cn-northwest-1",
+                    "eu-central-1",
+                    "eu-west-1",
+                    "eu-west-2",
+                    "eu-west-3",
+                    "sa-east-1",
+                    "us-gov-west-1"
+                ],
+                "default": "us-east-1"
+            },
+            "namespaces": {
+                "title": "Namespace Whitelist",
+                "type": "string",
+                "default": "*"
+            }
+        })
+        
+        config["required"] = ["id", "key", "region", "namespaces"]
+        config["secret"] = ["key"]
+        config["order"] = ["id", "key", "region", "namespaces"]
+
+        return config
 
     def _get_client(self):
         return boto3.client(

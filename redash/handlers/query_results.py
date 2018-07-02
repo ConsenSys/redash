@@ -131,6 +131,9 @@ class QueryResultListResource(BaseResource):
             'object_type': 'data_source',
             'query': query
         })
+        
+        if data_source.query_runner.configuration.get('synchronous', None) is not None:
+            return run_query_sync(data_source, parameter_values, query, max_age)
         return run_query(data_source, parameter_values, query, query_id, max_age)
 
 
