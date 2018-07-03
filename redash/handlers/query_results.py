@@ -2,16 +2,23 @@ import logging
 import json
 import time
 import requests
-
 import pystache
-from flask import make_response, request
+import re
+import simplejson
+import urllib
+
+from jose import jwt
+
+from flask import make_response, request, redirect
 from flask_login import current_user
 from flask_restful import abort
+
 from redash import models, settings, utils
 from redash.tasks import QueryTask, record_event
 from redash.permissions import require_permission, not_view_only, has_access, require_access, view_only
 from redash.remote_resource import remote_resource_restriction
 from redash.handlers.base import BaseResource, get_object_or_404
+from redash.handlers.inline_query import parse_inline_queries
 from redash.utils import collect_query_parameters, collect_parameters_from_request, gen_query_hash
 from redash.tasks.queries import enqueue_query
 
@@ -86,6 +93,17 @@ def run_query(data_source, parameter_values, query_text, query_id, max_age=0):
     if query_parameters:
         query_text = pystache.render(query_text, parameter_values)
 
+    custom_queries = parse_inline_queries(query_text)
+    if custom_queries is not None:
+        for q, c in custom_queries.iteritems():
+            custom_result = c(request.cookies.get("jwt", ""))
+
+            if type(custom_result) is list:
+                batched = [simplejson.loads(query_text.replace(q, r)) for r in custom_result]
+                query_text = json.dumps(batched, cls=utils.JSONEncoder)
+            else:
+                query_text = query_text.replace(q, custom_result)
+
     if max_age == 0:
         query_result = None
     else:
@@ -115,7 +133,6 @@ class QueryResultListResource(BaseResource):
         query = params['query']
         max_age = int(params.get('max_age', -1))
         query_id = params.get('query_id', 'adhoc')
-
         data_source = models.DataSource.get_by_id_and_org(params.get('data_source_id'), self.current_org)
 
         if not has_access(data_source.groups, self.current_user, not_view_only):
