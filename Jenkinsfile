@@ -4,7 +4,7 @@ node {
 
     def tagPrefix;
     switch ("${env.sha1}") {
-        case ~/^.*master$/: tagPrefix = 'it'; break
+        case ~/^.*photic$/: tagPrefix = 'it'; break
         case ~/^.*\/.*$/: tagPrefix = 'pr'; break
         default: tagPrefix = "br-${env.sha1}"; break
     }
