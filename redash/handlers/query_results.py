@@ -148,7 +148,17 @@ class QueryResultListResource(BaseResource):
             'object_type': 'data_source',
             'query': query
         })
-        return run_query(data_source, parameter_values, query, query_id, max_age)
+
+        try:
+            return run_query(data_source, parameter_values, query, query_id, max_age)
+        except jwt.ExpiredSignatureError:
+            return {
+                'job': {
+                    'status': 4, 
+                    'error': 'Your authentication credentials have expired, please re-login.', 
+                    'provider': settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer or settings.ROOT_UI_URL) 
+                }
+            }, 401
 
 
 ONE_YEAR = 60 * 60 * 24 * 365.25
