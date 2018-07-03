@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+create_db() {
+  exec /app/manage.py database create_tables
+}
+
 worker() {
   echo "Ensuring db tables are initialized..."
   create_db
@@ -31,10 +35,6 @@ server() {
 
   echo "Starting web server with $WEB_WORKERS_COUNT"
   exec /usr/local/bin/gunicorn -b 0.0.0.0:5000 --name redash -w$WEB_WORKERS_COUNT redash.wsgi:app
-}
-
-create_db() {
-  exec /app/manage.py database create_tables
 }
 
 help() {
