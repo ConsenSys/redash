@@ -80,6 +80,9 @@ class BaseQueryRunner(object):
     def cacheable(cls):
         return True
 
+    def pre_query(self, query, request):
+        return query
+
     def test_connection(self):
         if self.noop_query is None:
             raise NotImplementedError()

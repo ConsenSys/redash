@@ -1,4 +1,6 @@
 import requests
+import re
+
 from redash.query_runner import BaseQueryRunner, register
 
 
@@ -21,6 +23,24 @@ class Url(BaseQueryRunner):
 
     def test_connection(self):
         pass
+
+    def decode_query(self, query):
+        try:
+            return simplejson.loads(query)
+        except simplejson.JSONDecodeError:
+            return { 'path' : query }
+
+    def pre_query(self, query, request):
+        json_query = self.decode_query(query)
+        simple_matcher = re.compile("{(.*)}")
+
+        if '_h' is in json_query:
+            for k, v in json_query['_h'].iteritems():
+                for swap from simple_matcher.findall(v):
+                    swap_parts = swap.split(".")
+                    if swap_parts[0] == "request":
+                        if swap_parts[1] == "cookies":
+                            json_query['_h'][k] = json_query['_h'][k].replace("{%s}" % swap, request.cookies.get(swap_parts[2], ""))
 
     def run_query(self, query, user):
         base_url = self.configuration.get("url", None)

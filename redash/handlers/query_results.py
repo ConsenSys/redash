@@ -86,6 +86,8 @@ def run_query(data_source, parameter_values, query_text, query_id, max_age=0):
     if query_parameters:
         query_text = pystache.render(query_text, parameter_values)
 
+    query_text = data_source.query_runner.pre_query(query_text, request)
+
     if max_age == 0:
         query_result = None
     else:
