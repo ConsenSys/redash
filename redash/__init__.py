@@ -126,7 +126,7 @@ def create_app(load_admin=True):
                         elif now > exp:
                             raise jwt.JWTClaimsError('The asserted expiration claim has passed.')
                     except (jwt.ExpiredSignatureError, jwt.JWTClaimsError, jwt.JWTError) as e:
-                        return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer))
+                        return redirect(settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer or settings.ROOT_UI_URL))
                 return super(JwtFlask, self).process_response(response, *args, **kwargs)
         
         app = JwtFlask(__name__,
