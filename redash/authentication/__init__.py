@@ -170,6 +170,8 @@ def setup_authentication(app):
 
     login_manager.init_app(app)
     login_manager.anonymous_user = models.AnonymousUser
+    login_manager.login_view = settings.LOGIN_MANAGER_LOGIN_VIEW
+    login_manager.refresh_view = settings.LOGIN_MANAGER_REFRESH_VIEW
 
     app.secret_key = settings.COOKIE_SECRET
     app.register_blueprint(google_oauth.blueprint, url_prefix=settings.ROOT_UI_URL)
