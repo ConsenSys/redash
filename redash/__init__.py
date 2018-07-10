@@ -103,7 +103,7 @@ def create_app(load_admin=True):
     from redash.metrics.request import provision_app
     from jose import jwt
 
-    os.environ['SCRIPT_NAME'] = settings.ROOT_UI_URL
+    # os.environ['SCRIPT_NAME'] = settings.ROOT_UI_URL
 
     if settings.REMOTE_JWT_LOGIN_ENABLED:
         class JwtFlask(Flask):
@@ -144,7 +144,7 @@ def create_app(load_admin=True):
     # Make sure we get the right referral address even behind proxies like nginx.
     app.wsgi_app = ProxyFix(app.wsgi_app, settings.PROXIES_COUNT)
     app.url_map.converters['org_slug'] = SlugConverter
-    app.config["APPLICATION_ROOT"] = settings.ROOT_UI_URL
+    # app.config["APPLICATION_ROOT"] = settings.ROOT_UI_URL
     app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     if settings.ENFORCE_HTTPS:
