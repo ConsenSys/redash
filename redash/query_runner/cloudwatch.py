@@ -88,7 +88,7 @@ class CloudWatch(BaseQueryRunner):
 
     def test_connection(self):
         client = self._get_client()
-        response = client.list_metrics()
+        client.list_metrics()
         return True
 
     def get_schema(self, get_stats=False):

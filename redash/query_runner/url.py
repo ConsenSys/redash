@@ -1,7 +1,10 @@
 import requests
 import re
+import json
+import simplejson
 
 from redash.query_runner import BaseQueryRunner, register
+from redash.utils import JSONEncoder
 
 
 class Url(BaseQueryRunner):
@@ -34,20 +37,23 @@ class Url(BaseQueryRunner):
         json_query = self.decode_query(query)
         simple_matcher = re.compile("{(.*)}")
 
-        if '_h' is in json_query:
-            for k, v in json_query['_h'].iteritems():
-                for swap from simple_matcher.findall(v):
+        if 'headers' in json_query:
+            for k, v in json_query['headers'].iteritems():
+                for swap in simple_matcher.findall(v):
                     swap_parts = swap.split(".")
                     if swap_parts[0] == "request":
                         if swap_parts[1] == "cookies":
-                            json_query['_h'][k] = json_query['_h'][k].replace("{%s}" % swap, request.cookies.get(swap_parts[2], ""))
+                            json_query['headers'][k] = json_query['headers'][k].replace("{%s}" % swap, request.cookies.get(swap_parts[2], ""))
+        
+        return json.dumps(json_query, cls=JSONEncoder)
 
     def run_query(self, query, user):
         base_url = self.configuration.get("url", None)
-
+        
         try:
             error = None
-            query = query.strip()
+            json_query = self.decode_query(query)
+            query = json_query.get("path", "").strip()
 
             if base_url is not None and base_url != "":
                 if query.find("://") > -1:
@@ -58,9 +64,18 @@ class Url(BaseQueryRunner):
 
             url = base_url + query
 
-            response = requests.get(url)
+            if json_query.get('_m', None) == 'POST':
+                response = requests.post(url, headers=json_query.get("headers", {}), data=json_query.get("data", None))
+            else:
+                response = requests.get(url, headers=json_query.get("headers", {}))
             response.raise_for_status()
-            json_data = response.content.strip()
+
+            if 'query' in json_query:
+                columns = self.fetch_columns(json_query['query'].values())
+                rows = [dict((v[0], d[k]) for k, v in json_query['query'].iteritems()) for d in response.json()]
+                json_data = json.dumps({ 'columns' : columns, 'rows' : rows }, cls=JSONEncoder)
+            else:
+                json_data = response.content.strip()
 
             if not json_data:
                 error = "Got empty response from '{}'.".format(url)

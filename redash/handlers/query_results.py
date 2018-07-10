@@ -215,7 +215,7 @@ class QueryResultResource(BaseResource):
         max_age = int(request.args.get('maxAge', 0))
 
         if settings.REMOTE_RESOURCE_RESTRICTION_ENABLED and remote_resource_restriction(parameter_values, self.current_user, request):
-            abort(403, 'You have a remote resource restriction on the provided parameters.')
+            abort(403, message='You have a remote resource restriction on the provided parameters.')
 
         query_result = None
 

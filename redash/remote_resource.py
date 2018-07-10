@@ -1,5 +1,6 @@
 import pystache
 import re
+import requests
 
 from redash import settings
 
@@ -104,7 +105,7 @@ def remote_resource_restriction(parameters, user, req):
     cookies = creds['cookies'](user, req) if 'cookies' in creds else None
 
     try:
-        if body:
+        if data:
             resp = requests.post(get_validator(parameters), headers=headers, cookies=cookies, data=data)
         else:
             resp = requests.get(get_validator(parameters), headers=headers, cookies=cookies)
