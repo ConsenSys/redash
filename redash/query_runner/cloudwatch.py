@@ -50,23 +50,35 @@ def list_all_ns_metrics(client, ns):
 class CloudWatch(BaseQueryRunner):
     def run_query(self, query, user):
         try:
-            json_query = simplejson.loads(query)
+            json_queries = simplejson.loads(query)
+            data = { 'columns' : [], 'rows': [] }
 
-            if json_query.get('StartTime', None) is None:
-                json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(days=7)).isoformat()
+            if type(json_queries) is not list:
+                json_queries = [json_queries]
+            print json_queries
+            for json_query in json_queries:
+                extra_data = json_query.pop('Extra', None)
+                if json_query.get('StartTime', None) is None:
+                    json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(days=14)).isoformat()
 
-            if json_query.get('EndTime', None) is None:
-                json_query['EndTime'] = datetime.datetime.now().isoformat()
+                if json_query.get('EndTime', None) is None:
+                    json_query['EndTime'] = datetime.datetime.now().isoformat()
+                    
+                client = self._get_client()
+                response = client.get_metric_statistics(**json_query)
 
-            client = self._get_client()
-            response = client.get_metric_statistics(**json_query)
+                statistic_columns = [(s, types_map.get(s, None)) for s in json_query.get('Statistics', [])]
+                extended_columns = [(e, TYPE_FLOAT) for e in json_query.get('ExtendedStatistics', [])]
+                extra_columns = [(e, TYPE_STRING) for e in extra_data.keys()]
+                columns = self.fetch_columns([('Timestamp', TYPE_DATETIME)] + statistic_columns + extended_columns + extra_columns)
+                rows = response.get('Datapoints', [])
 
-            statistic_columns = [(s, types_map.get(s, None)) for s in json_query.get('Statistics', [])]
-            extended_columns = [(e, TYPE_FLOAT) for e in json_query.get('ExtendedStatistics', [])]
-            columns = self.fetch_columns([('Timestamp', TYPE_DATETIME)] + statistic_columns + extended_columns)
-            rows = response.get('Datapoints', [])
-            
-            data = { 'columns': columns, 'rows': rows }
+                for r in rows:
+                    for c, e in extra_data.iteritems():
+                        r[c] = e
+                
+                data['columns'] = columns
+                data['rows'] += rows
             error = None
             json_data = json.dumps(data, cls=JSONEncoder)
         except (KeyboardInterrupt, InterruptException):
