@@ -6,9 +6,6 @@ create_db() {
 }
 
 worker() {
-  echo "Ensuring db tables are initialized..."
-  create_db
-
   WORKERS_COUNT=${WORKERS_COUNT:-2}
   QUEUES=${QUEUES:-queries,scheduled_queries,celery}
 
@@ -17,9 +14,6 @@ worker() {
 }
 
 scheduler() {
-  echo "Ensuring db tables are initialized..."
-  create_db
-
   WORKERS_COUNT=${WORKERS_COUNT:-1}
   QUEUES=${QUEUES:-celery}
 
@@ -28,9 +22,6 @@ scheduler() {
 }
 
 server() {
-  echo "Ensuring db tables are initialized..."
-  create_db
-
   WEB_WORKERS_COUNT=${REDASH_WEB_WORKERS:-4}
 
   echo "Starting web server with $WEB_WORKERS_COUNT"
