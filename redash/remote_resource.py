@@ -103,6 +103,7 @@ def remote_resource_restriction(parameters, user, req):
     data = creds['data'](user, req) if 'data' in creds else None
     cookies = creds['cookies'](user, req) if 'cookies' in creds else None
 
+    print(get_validator(parameters), headers)
     try:
         if data:
             resp = requests.post(get_validator(parameters), headers=headers, cookies=cookies, data=data)
