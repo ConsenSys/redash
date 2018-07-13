@@ -7,7 +7,7 @@ from flask.cli import FlaskGroup, run_command
 from flask import current_app, url_for
 
 from redash import create_app, settings, __version__
-from redash.cli import users, groups, database, data_sources, organization
+from redash.cli import users, groups, database, data_sources, organization, photic
 from redash.monitor import get_status
 
 
@@ -33,6 +33,7 @@ manager.add_command(users.manager, "users")
 manager.add_command(groups.manager, "groups")
 manager.add_command(data_sources.manager, "ds")
 manager.add_command(organization.manager, "org")
+manager.add_command(photic.manager, "photic")
 manager.add_command(run_command, "runserver")
 
 
