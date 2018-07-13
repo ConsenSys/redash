@@ -26,7 +26,7 @@ const config = {
   output: {
     path: path.join(basePath, "./dist"),
     filename: "[name].js",
-    publicPath: uiRoot + "/static/"
+    publicPath: "./static/"
   },
   resolve: {
     alias: {
