@@ -47,10 +47,9 @@ def create_map_func(cred_mapping):
                 else:
                     value = user.__getattribute__(key) if key in dir(user) else None
                 
-                if to_key is 'Authorization' and value is not None and 'Bearer' not in value:
+                if to_key == 'Authorization' and value is not None and 'Bearer' not in value:
                     value = 'Bearer ' + value.strip()
-
-                if result[to_key] is None:
+                if result.get(to_key, None) is None:
                     result[to_key] = value
         return result
 
@@ -95,7 +94,7 @@ Tests the parameters against the validator for a query run request/user to deter
 the remote resource is restricted from the user.
 '''
 def remote_resource_restriction(parameters, user, req):
-    if not settings.REMOTE_RESOURCE_RESTRICTION_ENABLED or settings.REMOTE_RESOURCE_VALIDATOR:
+    if not settings.REMOTE_RESOURCE_RESTRICTION_ENABLED or not settings.REMOTE_RESOURCE_VALIDATOR:
         return False
 
     creds = get_resource_creds()
