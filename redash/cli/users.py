@@ -233,9 +233,13 @@ def invite(email, name, inviter_email, groups, is_admin=False,
 @option('--org', 'organization', default=None,
         help="The organization the user belongs to (leave blank for all"
         " organizations)")
-def list(organization=None):
+@option('--name', 'name', default=None,
+        help="The name of the user to look for")
+def list(organization=None, name=None):
     """List all users"""
-    if organization:
+    if name:
+        users = models.User.query.filter(models.User.name == name)
+    elif organization:
         org = models.Organization.get_by_slug(organization)
         users = models.User.query.filter(models.User.org == org)
     else:
@@ -246,3 +250,6 @@ def list(organization=None):
 
         print("Id: {}\nName: {}\nEmail: {}\nOrganization: {}".format(
             user.id, user.name.encode('utf-8'), user.email, user.org.name))
+
+    if users.count() == 0:
+        exit(1)

@@ -5,6 +5,26 @@ create_db() {
   exec /app/manage.py database create_tables
 }
 
+init_photic() {
+  echo "Ensuring admin user is initialized"
+  exec /app/manage.py user list
+  if [ "$?" -ne 0 ]; then
+    exec /app/manage.py user create_root "$AWS_ADMIN_EMAIL" "$AWS_ADMIN_NAME" --password "$AWS_ADMIN_PASSWORD"
+  fi
+
+  echo "Ensuring URL datasource(s) are initialized"
+  exec /app/manage.py ds list --name "Ledger API"
+  if [ "$?" -ne 0 ]; then
+    exec /app/manage.py ds new "Ledger API" --type "url" --options "{ \"asynchronous\": false, \"url\": \"$KALEIDO_PLATFORM_ROOT\" }"
+  fi
+
+  echo "Ensuring cloudwatch datasource(s) are initialized"
+  exec /app/manage.py ds list --name "Devops Stream"
+  if [ "$?" -ne 0 ]; then
+    exec /app/manage.py ds new "Devops Stream" --type "cloudwatch" --options "{ \"id\": \"$AWS_ACCESS_ID\", \"key\": \"$AWS_ACCESS_KEY\" \"namespaces\": \"k8s-netplane-$ENV\", \"region\": \"$REGION\" }"
+  fi
+}
+
 worker() {
   WORKERS_COUNT=${WORKERS_COUNT:-2}
   QUEUES=${QUEUES:-queries,scheduled_queries,celery}

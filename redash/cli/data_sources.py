@@ -18,9 +18,14 @@ manager = AppGroup(help="Data sources management commands.")
 @click.option('--org', 'organization', default=None,
               help="The organization the user belongs to (leave blank for "
               "all organizations).")
-def list(organization=None):
+@click.option('--name', 'name', default=None,
+              help="The name of data source to look for")
+def list(organization=None, name=None):
     """List currently configured data sources."""
-    if organization:
+    if name:
+        data_sources = models.DataSource.query.filter(
+            models.DataSource.name == name)
+    elif organization:
         org = models.Organization.get_by_slug(organization)
         data_sources = models.DataSource.query.filter(
             models.DataSource.org == org)
@@ -32,6 +37,9 @@ def list(organization=None):
 
         print("Id: {}\nName: {}\nType: {}\nOptions: {}".format(
             ds.id, ds.name, ds.type, ds.options.to_json()))
+
+    if data_sources.count() == 0:
+        exit(1)
 
 
 def validate_data_source_type(type):
