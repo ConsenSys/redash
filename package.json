@@ -4,12 +4,12 @@
   "description": "The frontend part of Redash.",
   "main": "index.js",
   "scripts": {
-    "start": "[ -f .env_root ] && . .env_root ; webpack-dev-server",
-    "dev": "[ -f .env_root ] && . .env_root ; REDASH_BACKEND=https://dev.redashapp.com npm start",
-    "build": "[ -f .env_root ] && . .env_root ; rm -rf ./client/dist/ && NODE_ENV=production webpack",
-    "watch": "[ -f .env_root ] && . .env_root ; webpack --watch --progress --colors -d",
-    "analyze": "[ -f .env_root ] && . .env_root ; rm -rf ./client/dist/ && BUNDLE_ANALYZER=on webpack",
-    "analyze:build": "[ -f .env_root ] && . .env_root ; rm -rf ./client/dist/ && NODE_ENV=production BUNDLE_ANALYZER=on webpack"
+    "start": "[ -f ./.env_root ] && . ./.env_root ; webpack-dev-server",
+    "dev": "[ -f ./.env_root ] && . ./.env_root ; REDASH_BACKEND=https://dev.redashapp.com npm start",
+    "build": "[ -f ./.env_root ] && . ./.env_root ; rm -rf ./client/dist/ && NODE_ENV=production webpack",
+    "watch": "[ -f ./.env_root ] && . ./.env_root ; webpack --watch --progress --colors -d",
+    "analyze": "[ -f ./.env_root ] && . ./.env_root ; rm -rf ./client/dist/ && BUNDLE_ANALYZER=on webpack",
+    "analyze:build": "[ -f ./.env_root ] && . ./.env_root ; rm -rf ./client/dist/ && NODE_ENV=production BUNDLE_ANALYZER=on webpack"
   },
   "repository": {
     "type": "git",
