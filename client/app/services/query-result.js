@@ -501,7 +501,7 @@ function QueryResultService($resource, $timeout, $q) {
           queryResult.update(error.data);
         } else if (error.status === 400 && 'job' in error.data) {
           queryResult.update(error.data);
-        } else if (error.status === 401) {
+        } else if (error.status === 401 && error.data.job.provider) {
           window.location.href = error.data.job.provider;
         } else {
           logger('Unknown error', error);

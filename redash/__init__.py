@@ -110,7 +110,7 @@ def create_app(load_admin=True):
             def process_response(self, response, *args, **kwargs):
                 jwttoken = request.cookies.get('jwt', None)
 
-                if jwttoken is not None:
+                if settings.REMOTE_JWT_LOGIN_ENABLED and jwttoken is not None:
                     try:
                         public_key = get_jwt_public_key()
                         jwt_decoded = jwt.get_unverified_claims(jwttoken) if public_key is '' else jwt.decode(jwttoken, public_key)

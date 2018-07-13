@@ -157,7 +157,7 @@ class QueryResultListResource(BaseResource):
                 'job': {
                     'status': 4, 
                     'error': 'Your authentication credentials have expired, please re-login.', 
-                    'provider': settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer or settings.ROOT_UI_URL) 
+                    'provider': settings.REMOTE_JWT_EXPIRED_ENDPOINT + urllib.quote_plus(request.referrer or settings.ROOT_UI_URL) if settings.REMOTE_JWT_LOGIN_ENABLED else None
                 }
             }, 401
 
