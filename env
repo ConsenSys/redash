@@ -1,0 +1,2 @@
+export REDASH_ROOT_UI_URL="/analytics"
+export REDASH_ROOT_API_URL="/api/v1/analytics"
