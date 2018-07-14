@@ -15,11 +15,11 @@ node {
         }
 
         stage ("Build Workers Image") {
-            customWorkersImage = docker.build("${targetImageName}workers:${tagPrefix}-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
+            customWorkersImage = docker.build("${targetImageName}workers:dev-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
         }
 
         stage ("Build Dashboard Image") {
-            customDashboardImage = docker.build("${targetImageName}dashboard:${tagPrefix}-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
+            customDashboardImage = docker.build("${targetImageName}dashboard:dev-${currentBuild.startTimeInMillis}", "--build-arg DOCKER_REGISTRY=${env.DOCKER_REGISTRY} .");
         }
 
         if ("$tagPrefix" != "pr") {
