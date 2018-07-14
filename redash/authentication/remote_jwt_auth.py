@@ -48,11 +48,15 @@ def login(org_slug=None):
         if user is None:
             return logout_and_redirect_to_index()
 
-        resp = redirect((request.host_url[:-1] + next_path) or url_for('redash.index', org_slug=org_slug), code=302)
+        next_url = request.host_url[:-1] + next_path
+
+        if 'localhost' not in next_url and 'http:' in next_url:
+            next_url = next_url.replace('http:', 'https:')
+
+        resp = redirect(next_url or url_for('redash.index', org_slug=org_slug), code=302)
         resp.set_cookie('jwt', jwttoken, secure=True, httponly=True)
 
-        logger.info("Redirecting %s to %s" % (email, request.host_url[:-1] + next_path))
-        logger.info(resp.headers)
+        logger.info("Redirecting %s to %s" % (email, next_url))
 
         return resp
     except jwt.JWTError, jwt.ExpiredSignatureError:
