@@ -10,6 +10,7 @@
 
 .navbar-brand.embedded {
     left: unset;
+    margin-left: 0 !important;
 }
 
 .navbar.app-header .user-name-only {
