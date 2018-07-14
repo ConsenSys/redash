@@ -18,7 +18,7 @@ def login(org_slug=None):
 
     if not settings.REMOTE_JWT_LOGIN_ENABLED:
         logger.error("Cannot use remote user for login without being enabled in settings")
-        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug))
+        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug, _external=True))
 
     jwttoken = request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')
 
@@ -31,7 +31,7 @@ def login(org_slug=None):
 
     if not jwt:
         logger.error("Cannot use remote jwt for login when it's not provided in the request (looked in headers['" + settings.REMOTE_USER_HEADER + "'])")
-        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug))
+        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug, _external=True))
 
     try:
         public_key = get_jwt_public_key()
@@ -40,7 +40,7 @@ def login(org_slug=None):
 
         if not email:
             logger.error("Cannot use remote jwt for login when it's not provided in the request (looked in headers['" + settings.REMOTE_USER_HEADER + "'])")
-            return redirect(url_for('redash.index', next=next_path, org_slug=org_slug))
+            return redirect(url_for('redash.index', next=next_path, org_slug=org_slug, _external=True))
 
         logger.info("Logging in " + email + " via remote jwt")
 
@@ -53,7 +53,7 @@ def login(org_slug=None):
         if 'localhost' not in next_url and 'http:' in next_url:
             next_url = next_url.replace('http:', 'https:')
 
-        resp = redirect(next_url or url_for('redash.index', org_slug=org_slug), code=302)
+        resp = redirect(next_url or url_for('redash.index', org_slug=org_slug, _external=True), code=302)
         resp.set_cookie('jwt', jwttoken, secure=True, httponly=True)
 
         logger.info("Redirecting %s to %s" % (email, next_url))
@@ -62,4 +62,4 @@ def login(org_slug=None):
     except jwt.JWTError, jwt.ExpiredSignatureError:
         logger.error("Remote user attempted entry using key with invalid signature")
         logger.info(settings.REMOTE_JWT_EXPIRED_ENDPOINT)
-        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug))
+        return redirect(url_for('redash.index', next=next_path, org_slug=org_slug, _external=True))

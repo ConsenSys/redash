@@ -147,7 +147,7 @@ def redirect_to_login():
         response.status_code = 404
         return response
 
-    login_url = get_login_url(next=request.url, external=False)
+    login_url = get_login_url(next=request.url, external=True)
 
     return redirect(login_url)
 
@@ -158,9 +158,9 @@ def logout_and_redirect_to_index():
     if settings.MULTI_ORG and current_org == None:
         index_url = '/'
     elif settings.MULTI_ORG:
-        index_url = url_for('redash.index', org_slug=current_org.slug, _external=False)
+        index_url = url_for('redash.index', org_slug=current_org.slug, _external=True)
     else:
-        index_url = url_for('redash.index', _external=False)
+        index_url = url_for('redash.index', _external=True)
 
     return redirect(index_url)
 

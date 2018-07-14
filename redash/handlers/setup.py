@@ -55,6 +55,6 @@ def setup():
         if form.newsletter.data or form.security_notifications:
             subscribe.delay(form.data)
 
-        return redirect(url_for('redash.index', org_slug=None))
+        return redirect(url_for('redash.index', org_slug=None, _external=True))
 
     return render_template('setup.html', form=form)
