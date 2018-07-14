@@ -112,10 +112,10 @@ def login(org_slug=None):
     next_path = request.args.get('next', index_url)
 
     if next_path.startswith('/'):
-        next_url = request.host_url[:-1] + next_path
+        next_path = request.host_url[:-1] + next_path
 
-    if 'localhost' not in next_url and 'http:' in next_url:
-        next_url = next_url.replace('http:', 'https:')
+    if 'localhost' not in next_path and 'http:' in next_path:
+        next_path = next_path.replace('http:', 'https:')
 
     if current_user.is_authenticated:
         logger.info("Redirecting authenticated user %s to %s" % (current_user.email, next_path))
@@ -162,7 +162,7 @@ def logout(org_slug=None):
         if 'localhost' not in login_path and 'http:' in login_path:
             login_path = login_path.replace('http:', 'https:')
 
-    return redirect(login_path)
+    return redirect(get_login_url(next=None))
 
 
 def base_href():
