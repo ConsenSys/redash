@@ -1,7 +1,7 @@
 import logging
 
 from jose import jwt
-from flask import redirect, url_for, Blueprint, request
+from flask import redirect, url_for, Blueprint, request, make_response
 from redash.authentication import create_and_login_user, logout_and_redirect_to_index, get_jwt_public_key
 from redash.authentication.org_resolving import current_org
 from redash.handlers.base import org_scoped_rule
@@ -48,7 +48,7 @@ def login(org_slug=None):
         if user is None:
             return logout_and_redirect_to_index()
 
-        resp = redirect(next_path or url_for('redash.index', org_slug=org_slug), code=302)
+        resp = make_response(redirect((request.host_url[:-1] + next_path) or url_for('redash.index', org_slug=org_slug), code=302))
         resp.set_cookie('jwt', jwttoken, secure=True, httponly=True)
 
         return resp
