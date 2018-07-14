@@ -114,10 +114,11 @@ def login(org_slug=None):
     if next_path.startswith('/'):
         next_url = request.host_url[:-1] + next_path
 
-        if 'localhost' not in next_url and 'http:' in next_url:
-            next_url = next_url.replace('http:', 'https:')
+    if 'localhost' not in next_url and 'http:' in next_url:
+        next_url = next_url.replace('http:', 'https:')
 
     if current_user.is_authenticated:
+        logger.info("Redirecting authenticated user %s to %s" % (current_user.email, next_path))
         return redirect(next_path)
 
     if settings.REMOTE_JWT_LOGIN_ENABLED and (request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')):
