@@ -1,19 +1,20 @@
 <nav class="navbar navbar-default app-header" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" ng-click="isNavOpen = !isNavOpen">
+      <button type="button" class="navbar-toggle" ng-click="isNavOpen = !isNavOpen" ng-show="$ctrl.currentUser.isAdmin">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
       <!-- REDASH LOGO -->
-      <a class="navbar-brand" ng-href="{{$ctrl.basePath}}"><img ng-src="{{$ctrl.logoUrl}}"/></a>
+      <a class="navbar-brand" ng-href="{{$ctrl.basePath}}" ng-show="$ctrl.currentUser.isAdmin"><img ng-src="{{$ctrl.logoUrl}}"/></a>
+      <a class="navbar-brand embedded" ng-href="{{$ctrl.basePath}}" ng-show="!$ctrl.currentUser.isAdmin"><img ng-src="{{$ctrl.logoUrl}}"/></a>
     </div>
     <div class="collapse navbar-collapse" uib-collapse="!isNavOpen">
       <!-- Main Left Nav-->
 
-      <ul class="nav navbar-nav nav__main">
+      <ul class="nav navbar-nav nav__main" ng-show="$ctrl.currentUser.isAdmin">
         <li class="dropdown btn-group" ng-show="$ctrl.showDashboardsMenu" uib-dropdown>
           <a id="split-button" class="btn" href="./dashboards">Dashboards</a>
           <a type="button" class="btn hidden-xs" uib-dropdown-toggle>
@@ -36,7 +37,7 @@
       </ul>
 
       <!-- Add New Button -->
-      <div class="btn-group navbar-btn navbar-left btn__new hidden-xs" uib-dropdown is-open="status.isopen">
+      <div class="btn-group navbar-btn navbar-left btn__new hidden-xs" uib-dropdown is-open="status.isopen" ng-show="$ctrl.currentUser.isAdmin">
         <button id="create-button" type="button" class="btn btn-primary btn--create" uib-dropdown-toggle ng-disabled="disabled">
           Create <span class="caret caret--nav"></span>
         </button>
@@ -48,7 +49,16 @@
       </div>
 
       <!-- Profile -->
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" ng-show="!$ctrl.currentUser.isAdmin">
+        <li>
+          <a class="user-name-only" href="#">
+              <img ng-src="{{ $ctrl.currentUser.profile_image_url }}" class="profile__image--navbar" width="20"/>
+              <span class="dropdown--profile__username" ng-bind="$ctrl.currentUser.name"></span>
+          </a>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right" ng-show="$ctrl.currentUser.isAdmin">
         <li ng-show="$ctrl.currentUser.isAdmin">
           <a href="./data_sources" title="Settings"><i class="fa fa-sliders" aria-hidden="true"></i></a>
         </li>
@@ -96,7 +106,7 @@
       </ul>
 
       <!-- Search -->
-      <form class="navbar-form navbar-right" role="search" ng-submit="$ctrl.searchQueries()">
+      <form class="navbar-form navbar-right" role="search" ng-submit="$ctrl.searchQueries()" ng-show="$ctrl.currentUser.isAdmin">
         <div class="input-group menu-search">
           <input type="text" ng-model="$ctrl.term" class="form-control navbar__search__input" placeholder="Search queries...">
           <span class="input-group-btn">
