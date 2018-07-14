@@ -48,10 +48,10 @@ def login(org_slug=None):
         if user is None:
             return logout_and_redirect_to_index()
 
-        resp = make_response(redirect((request.host_url[:-1] + next_path) or url_for('redash.index', org_slug=org_slug), code=302))
+        resp = redirect((request.host_url[:-1] + next_path) or url_for('redash.index', org_slug=org_slug), code=302)
         resp.set_cookie('jwt', jwttoken, secure=True, httponly=True)
 
-        logger.info("Redirecting %s to %s" % (email, request.host_url[:-1] + next_path)
+        logger.info("Redirecting %s to %s" % (email, request.host_url[:-1] + next_path))
         logger.info(resp.headers)
 
         return resp
