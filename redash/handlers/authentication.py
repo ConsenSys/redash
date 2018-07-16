@@ -55,7 +55,7 @@ def render_token_login_page(template, org_slug, token):
             models.db.session.add(user)
             login_user(user)
             models.db.session.commit()
-            return redirect(url_for('redash.index', org_slug=org_slug))
+            return redirect(url_for('redash.index', org_slug=org_slug, _external=True))
 
     google_auth_url = get_google_auth_url(url_for('redash.index', org_slug=org_slug))
 
@@ -104,13 +104,21 @@ def login(org_slug=None):
     # We intentionally use == as otherwise it won't actually use the proxy. So weird :O
     # noinspection PyComparisonWithNone
     if current_org == None and not settings.MULTI_ORG:
-        return redirect('/setup')
+        return redirect(settings.ROOT_UI_URL + '/setup')
     elif current_org == None:
-        return redirect('/')
+        return redirect(settings.ROOT_UI_URL + '/')
 
     index_url = url_for("redash.index", org_slug=org_slug)
     next_path = request.args.get('next', index_url)
+
+    if next_path.startswith('/'):
+        next_path = request.host_url[:-1] + next_path
+
+    if 'localhost' not in next_path and 'http:' in next_path:
+        next_path = next_path.replace('http:', 'https:')
+
     if current_user.is_authenticated:
+        logger.info("Redirecting authenticated user %s to %s" % (current_user.email, next_path))
         return redirect(next_path)
 
     if settings.REMOTE_JWT_LOGIN_ENABLED and (request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')):
@@ -146,6 +154,14 @@ def login(org_slug=None):
 @routes.route(org_scoped_rule('/logout'))
 def logout(org_slug=None):
     logout_user()
+    login_path = get_login_url(next=None)
+
+    if login_path.startswith('/'):
+        login_path = request.host_url[:-1] + login_path
+
+        if 'localhost' not in login_path and 'http:' in login_path:
+            login_path = login_path.replace('http:', 'https:')
+
     return redirect(get_login_url(next=None))
 
 
