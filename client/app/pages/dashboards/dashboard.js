@@ -115,7 +115,7 @@ function DashboardCtrl(
           });
       }
     });
-    this.globalParameters = _.values(globalParams);
+    this.globalParameters = _.values(globalParams).filter(p => !p.hidden);
   };
 
   this.onGlobalParametersChange = () => {

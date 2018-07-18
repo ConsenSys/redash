@@ -52,6 +52,7 @@ class Parameter {
     this.type = parameter.type;
     this.value = parameter.value;
     this.global = parameter.global;
+    this.hidden = parameter.hidden;
     this.enumOptions = parameter.enumOptions;
     this.queryId = parameter.queryId;
   }

@@ -4,12 +4,14 @@ import requests
 
 from jose import jwt
 
+from redash import settings
+
 
 crud = {
     "environment": {
         "method": "GET",
         "params": ["consortia_id", "environment_id"],
-        "url": "https://control-dev.photic.io/api/v1/consortia/{{consortia_id}}/environments/{{environment_id}}"
+        "url": "/api/v1/consortia/{{consortia_id}}/environments/{{environment_id}}"
     }
 }
 
@@ -20,7 +22,7 @@ def create_call_func(inline_parts):
 
         if operation is not None:
             params = dict(zip(operation['params'], inline_parts[1].replace("(", "").replace(")", "").replace(" ", "").split(",")))
-            url = pystache.render(operation['url'], params)
+            url = pystache.render(settings.INLINE_QUERY_ROOT_URL + operation['url'], params)
             cred = 'Bearer %s' % auth if 'Bearer' not in auth else auth
 
             if operation['method'] == "GET":

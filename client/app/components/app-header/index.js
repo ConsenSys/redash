@@ -15,6 +15,8 @@ function controller($rootScope, $location, $uibModal, Auth, currentUser, clientC
   this.showNewQueryMenu = currentUser.hasPermission('create_query');
   this.showSettingsMenu = currentUser.hasPermission('list_users');
   this.showDashboardsMenu = currentUser.hasPermission('list_dashboards');
+  this.platformPath = `${$location.protocol()}://${$location.host()}` +
+    ($location.search().p_consortia_id && $location.search().p_environment_id ? `/environments/${$location.search().p_consortia_id}/${$location.search().p_environment_id}` : '');
 
   this.reloadDashboards = () => {
     logger('Reloading dashboards.');

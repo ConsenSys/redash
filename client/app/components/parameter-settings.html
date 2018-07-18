@@ -26,8 +26,14 @@
           Global
         </label>
       </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" class="form-inline" ng-model="$ctrl.parameter.hidden">
+          Hidden
+        </label>
+      </div>
       <div class="form-group" ng-if="$ctrl.parameter.type === 'enum'">
-        <label>Dropdown List Values (newline delimited)</label>
+        <label>Dropdown List Values (newline delimited) with comma separating name and value</label>
         <textarea class="form-control" rows="3" ng-model="$ctrl.parameter.enumOptions"></textarea>
       </div>
       <div class="form-group" ng-if="$ctrl.parameter.type === 'query'">

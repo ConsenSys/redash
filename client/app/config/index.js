@@ -28,6 +28,7 @@ import * as filters from '@/filters';
 import registerDirectives from '@/directives';
 import markdownFilter from '@/filters/markdown';
 import dateTimeFilter from '@/filters/datetime';
+import csvFilter from '@/filters/csv';
 import dashboardGridOptions from './dashboard-grid-options';
 
 const logger = debug('redash:config');
@@ -140,6 +141,7 @@ registerServices();
 registerFilters();
 markdownFilter(ngModule);
 dateTimeFilter(ngModule);
+csvFilter(ngModule);
 registerComponents();
 registerPages();
 registerVisualizations(ngModule);

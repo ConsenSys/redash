@@ -2,12 +2,6 @@
     height: 30px;
 }
 
-.navbar-brand img {
-    height: 30px;
-    padding: 5px 0;
-    margin: 5px 0;
-}
-
 .navbar-brand.embedded {
     left: unset;
     margin-left: 0 !important;
@@ -15,4 +9,9 @@
 
 .navbar.app-header .user-name-only {
     pointer-events: none;
+}
+
+.nav.navbar-nav .subtle > a, .nav.navbar-nav .subtle > a i {
+    font-weight: 200;
+    font-size: 14px;
 }

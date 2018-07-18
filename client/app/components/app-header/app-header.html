@@ -9,7 +9,9 @@
       </button>
       <!-- REDASH LOGO -->
       <a class="navbar-brand" ng-href="/" ng-show="$ctrl.currentUser.isAdmin"><img ng-src="{{$ctrl.logoUrl}}"/></a>
-      <a class="navbar-brand embedded" ng-href="/" ng-show="!$ctrl.currentUser.isAdmin"><img ng-src="{{$ctrl.logoUrl}}"/></a>
+      <div class="navbar-brand embedded" ng-show="!$ctrl.currentUser.isAdmin">
+        <a ng-href="/"><img ng-src="{{$ctrl.logoUrl}}"/></a>
+      </div>
     </div>
     <div class="collapse navbar-collapse" uib-collapse="!isNavOpen">
       <!-- Main Left Nav-->
@@ -50,6 +52,9 @@
 
       <!-- Profile -->
       <ul class="nav navbar-nav navbar-right" ng-show="!$ctrl.currentUser.isAdmin">
+        <li ng-show="!$ctrl.currentUser.isAdmin" class="subtle">
+          <a ng-href="{{$ctrl.platformPath}}" style="vertical-align: middle; font-size: 14px;"><i class="fa fa-arrow-left"></i> Back to Platform</a>
+        </li>
         <li>
           <a class="user-name-only" href="#">
               <img ng-src="{{ $ctrl.currentUser.profile_image_url }}" class="profile__image--navbar" width="20"/>
@@ -69,7 +74,8 @@
           <a href="#" class="dropdown-toggle dropdown--profile" uib-dropdown-toggle>
             <img ng-src="{{ $ctrl.currentUser.profile_image_url }}" class="profile__image--navbar" width="20"/>
             <span class="dropdown--profile__username" ng-bind="$ctrl.currentUser.name"></span> <span
-            class="caret caret--nav"></span></a>
+            class="caret caret--nav"></span>
+          </a>
           <ul class="dropdown-menu dropdown-menu--profile">
             <li>
               <a ng-href="./users/me">Edit Profile</a>

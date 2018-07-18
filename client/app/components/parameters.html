@@ -16,7 +16,7 @@
       <input ng-switch-when="date" type="date" class="form-control" ng-model="param.ngModel">
       <span ng-switch-when="enum">
         <select ng-model="param.value" class="form-control">
-          <option ng-repeat="option in extractEnumOptions(param.enumOptions)" value="{{option}}">{{option}}</option>
+          <option ng-repeat="option in extractEnumOptions(param.enumOptions)" value="{{ option | csv:1 }}">{{ option | csv:0 }}</option>
         </select>
       </span>
       <span ng-switch-when="query">
