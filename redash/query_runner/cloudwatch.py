@@ -58,14 +58,12 @@ class CloudWatch(BaseQueryRunner):
             print json_queries
             for json_query in json_queries:
                 extra_data = json_query.pop('Extra', None)
-                past_value = json_query.pop('Past', None)
+                past_value = json_query.pop('Past', 604800)
 
-                if past_value is not None and json_query.get('StartTime', None) is None:
+                if json_query.get('Period', None) is None and json_query.get('StartTime', None) is None:
                     past_interval = int(past_value)
                     json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(seconds=past_interval)).isoformat()
-
-                    if json_query.get('Period', None) is None:
-                        json_query['Period'] = int(past_interval / 1440) + (past_interval % 1440 > 0)
+                    json_query['Period'] = int(past_interval / 1440) + (past_interval % 1440 > 0)
 
                 if json_query.get('StartTime', None) is None:
                     json_query['StartTime'] = (datetime.datetime.now() - datetime.timedelta(days=14)).isoformat()
