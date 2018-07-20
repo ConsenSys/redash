@@ -57,7 +57,7 @@ class CloudWatch(BaseQueryRunner):
                 json_queries = [json_queries]
             print json_queries
             for json_query in json_queries:
-                extra_data = json_query.pop('Extra', None)
+                extra_data = json_query.pop('Extra', {})
                 past_value = json_query.pop('Past', 604800)
 
                 if json_query.get('Period', None) is None and json_query.get('StartTime', None) is None:
@@ -99,6 +99,10 @@ class CloudWatch(BaseQueryRunner):
         return True
 
     def get_schema(self, get_stats=False):
+        dimensions_schema = self.configuration.get('dimensions', '')
+        if dimensions_schema.strip() != '':
+            return simplejson.loads(dimensions_schema).values()
+
         client = self._get_client()
         response = list(itertools.chain.from_iterable(list_all_ns_metrics(client, ns) for ns in self.whitelist))
         schema = {}
@@ -113,7 +117,7 @@ class CloudWatch(BaseQueryRunner):
             if ns not in namespaces:
                 namespaces.append(ns)
                 
-            schema[name]['columns'] = list(set(schema[name]['columns'] + ['%s=%s' % (dim['Name'], dim['Value']) for dim in metric['Dimensions']]))
+            schema[name]['columns'] = list(set(schema[name]['columns'] + [dim['Name'] for dim in metric['Dimensions']]))
 
         if len(namespaces):
             schema['meta'] = { 'name': '_ns', 'columns' : namespaces }
@@ -180,6 +184,11 @@ class CloudWatch(BaseQueryRunner):
                     "title": "Namespace Whitelist",
                     "type": "string",
                     "default": "*"
+                },
+                "dimensions": {
+                    "title": "Metric Dimensions",
+                    "type": "string",
+                    "multiline": 5
                 }
             },
             "required": ["id", "key", "region", "namespaces"],
