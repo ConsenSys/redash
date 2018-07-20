@@ -8,15 +8,12 @@
         <span class="icon-bar"></span>
       </button>
       <!-- REDASH LOGO -->
-      <a class="navbar-brand" ng-href="/" ng-show="$ctrl.currentUser.isAdmin"><img ng-src="{{$ctrl.logoUrl}}"/></a>
-      <div class="navbar-brand embedded" ng-show="!$ctrl.currentUser.isAdmin">
-        <a ng-href="/"><img ng-src="{{$ctrl.logoUrl}}"/></a>
-      </div>
+      <a class="navbar-brand white-label" ng-href="/"><img ng-src="{{$ctrl.logoUrl}}"/></a>
     </div>
     <div class="collapse navbar-collapse" uib-collapse="!isNavOpen">
       <!-- Main Left Nav-->
 
-      <ul class="nav navbar-nav nav__main" ng-show="$ctrl.currentUser.isAdmin">
+      <ul class="nav navbar-nav nav__main">
         <li class="dropdown btn-group" ng-show="$ctrl.showDashboardsMenu" uib-dropdown>
           <a id="split-button" class="btn" href="./dashboards">Dashboards</a>
           <a type="button" class="btn hidden-xs" uib-dropdown-toggle>
@@ -33,37 +30,28 @@
         <li class="dropdown" ng-show="$ctrl.showQueriesMenu" uib-dropdown>
           <a href="./queries">Queries</a>
         </li>
-        <li ng-if="$ctrl.showAlertsLink">
+        <li ng-if="$ctrl.showAlertsLink && $ctrl.currentUser.isAdmin">
           <a href="./alerts">Alerts</a>
         </li>
       </ul>
 
       <!-- Add New Button -->
-      <div class="btn-group navbar-btn navbar-left btn__new hidden-xs" uib-dropdown is-open="status.isopen" ng-show="$ctrl.currentUser.isAdmin">
+      <div class="btn-group navbar-btn navbar-left btn__new hidden-xs" uib-dropdown is-open="status.isopen">
         <button id="create-button" type="button" class="btn btn-primary btn--create" uib-dropdown-toggle ng-disabled="disabled">
           Create <span class="caret caret--nav"></span>
         </button>
         <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="create-button">
           <li role="menuitem" ng-show="$ctrl.showNewQueryMenu"><a href="./queries/new">Query</a></li>
           <li role="menuitem"><a ng-show="$ctrl.currentUser.hasPermission('create_dashboard')" ng-click="$ctrl.newDashboard()">Dashboard</a></li>
-          <li role="menuitem"><a href="./alerts/new">Alert</a></li>
+          <li role="menuitem" ng-show="$ctrl.currentUser.isAdmin"><a href="./alerts/new">Alert</a></li>
         </ul>
       </div>
 
       <!-- Profile -->
-      <ul class="nav navbar-nav navbar-right" ng-show="!$ctrl.currentUser.isAdmin">
+      <ul class="nav navbar-nav navbar-right">
         <li ng-show="!$ctrl.currentUser.isAdmin" class="subtle">
           <a ng-href="{{$ctrl.platformPath}}" style="vertical-align: middle; font-size: 14px;"><i class="fa fa-arrow-left"></i> Back to Platform</a>
         </li>
-        <li>
-          <a class="user-name-only" href="#">
-              <img ng-src="{{ $ctrl.currentUser.profile_image_url }}" class="profile__image--navbar" width="20"/>
-              <span class="dropdown--profile__username" ng-bind="$ctrl.currentUser.name"></span>
-          </a>
-        </li>
-      </ul>
-
-      <ul class="nav navbar-nav navbar-right" ng-show="$ctrl.currentUser.isAdmin">
         <li ng-show="$ctrl.currentUser.isAdmin">
           <a href="./data_sources" title="Settings"><i class="fa fa-sliders" aria-hidden="true"></i></a>
         </li>
@@ -77,7 +65,7 @@
             class="caret caret--nav"></span>
           </a>
           <ul class="dropdown-menu dropdown-menu--profile">
-            <li>
+            <li ng-show="$ctrl.currentUser.isAdmin">
               <a ng-href="./users/me">Edit Profile</a>
             </li>
             <li class="divider" ng-if="$ctrl.currentUser.hasPermission('super_admin')">
@@ -85,16 +73,16 @@
             <li ng-show="$ctrl.currentUser.isAdmin">
               <a href="./data_sources" title="Data Sources">Data Sources</a>
             </li>
-            <li ng-show="$ctrl.showSettingsMenu">
+            <li ng-show="$ctrl.showSettingsMenu && $ctrl.currentUser.isAdmin">
               <a href="./groups" title="Settings">Groups</a>
             </li>
-            <li ng-show="$ctrl.showSettingsMenu">
+            <li ng-show="$ctrl.showSettingsMenu && $ctrl.currentUser.isAdmin">
               <a href="./users" title="Settings">Users</a>
             </li>
             <li>
               <a ng-href="./query_snippets">Query Snippets</a>
             </li>
-            <li ng-show="$ctrl.showSettingsMenu">
+            <li ng-show="$ctrl.showSettingsMenu && $ctrl.currentUser.isAdmin">
               <a href="./destinations" title="Settings">Alert Destinations</a>
             </li>
 

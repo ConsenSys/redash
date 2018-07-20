@@ -46,7 +46,12 @@
 
         <span ng-show="query.id && canViewSource">
         <a ng-show="!sourceMode"
+          ng-if="!query.is_archived && query.id != undefined && (isQueryOwner || currentUser.hasPermission('admin'))"
           ng-href="./{{query.getUrl(true, selectedTab)}}" class="btn btn-default btn--showhide"><i class="fa fa-code" aria-hidden="true"></i> Edit Source</i>
+        </a>
+        <a ng-show="!sourceMode"
+          ng-if="!query.is_archived && query.id != undefined && !(isQueryOwner || currentUser.hasPermission('admin'))"
+          ng-href="./{{query.getUrl(true, selectedTab)}}" class="btn btn-default btn--showhide"><i class="fa fa-code" aria-hidden="true"></i> View Source</i>
         </a>
         <a ng-show="sourceMode"
           ng-href="./{{query.getUrl(false, selectedTab)}}" class="btn btn-default btn--showhide"><i class="fa fa-table" aria-hidden="true"></i> Show Data Only</i>
