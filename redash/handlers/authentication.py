@@ -117,12 +117,12 @@ def login(org_slug=None):
     if 'localhost' not in next_path and 'http:' in next_path:
         next_path = next_path.replace('http:', 'https:')
 
+    if settings.REMOTE_JWT_LOGIN_ENABLED and (request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')):
+        return remote_jwt_auth.login(org_slug)
+
     if current_user.is_authenticated:
         logger.info("Redirecting authenticated user %s to %s" % (current_user.email, next_path))
         return redirect(next_path)
-
-    if settings.REMOTE_JWT_LOGIN_ENABLED and (request.headers.get(settings.REMOTE_USER_HEADER) or request.cookies.get('jwt')):
-        return remote_jwt_auth.login(org_slug)
 
     if request.method == 'POST':
         try:

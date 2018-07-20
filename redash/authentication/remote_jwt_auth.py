@@ -14,7 +14,7 @@ blueprint = Blueprint('remote_jwt_auth', __name__)
 
 @blueprint.route(org_scoped_rule("/remote_jwt/login"))
 def login(org_slug=None):
-    next_path = request.args.get('next')
+    next_path = request.args.get('next', '/')
 
     if not settings.REMOTE_JWT_LOGIN_ENABLED:
         logger.error("Cannot use remote user for login without being enabled in settings")
