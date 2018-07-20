@@ -36,7 +36,7 @@ function AuthService($window, $location, $q, $http) {
     logout() {
       logger('Logout.');
       window.sessionStorage.removeItem(SESSION_ITEM);
-      $window.location.href = 'logout';
+      $window.location.href = $location.host().indexOf('localhost') !== -1 ? 'logout' : `${$location.protocol()}://${$location.host()}/logout`;
     },
     loadSession() {
       logger('Loading session');
