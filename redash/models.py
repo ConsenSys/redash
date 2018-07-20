@@ -511,6 +511,10 @@ class User(TimestampMixin, db.Model, BelongsToOrgMixin, UserMixin, PermissionsCh
         return list(itertools.chain(*[g.permissions for g in
                                       Group.query.filter(Group.id.in_(self.group_ids))]))
 
+    @property
+    def is_admin(self):
+        return 'admin' in self.permissions
+
     @classmethod
     def get_by_email_and_org(cls, email, org):
         return cls.query.filter(cls.email == email, cls.org == org).one()
@@ -973,7 +977,7 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
         return query
 
     @classmethod
-    def all_queries(cls, group_ids, user_id=None, drafts=False):
+    def all_queries(cls, group_ids, user_id=None, drafts=False, is_admin=False):
         query_ids = (db.session.query(distinct(cls.id))
                                .join(DataSourceGroup, Query.data_source_id == DataSourceGroup.data_source_id)
                                .filter(Query.is_archived == False)
@@ -988,11 +992,14 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
         if not drafts:
             q = q.filter(or_(Query.is_draft == False, Query.user_id == user_id))
 
-        return q
+        # Retrieving all queries available to a user should only show theirs and the service user's
+        # At this point the queries are already scoped to groups that the user is in, so admin specific
+        # datasources should be used for queries that user's should not have access to.
+        return q if is_admin else q.filter(or_(Query.user_id == user_id, Query.user_id == 1))
 
     @classmethod
     def by_user(cls, user):
-        return cls.all_queries(user.group_ids, user.id).filter(Query.user == user)
+        return cls.all_queries(user.group_ids, user.id, is_admin=user.is_admin).filter(Query.user == user)
 
     @classmethod
     def outdated_queries(cls):
@@ -1020,7 +1027,7 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
         return outdated_queries.values()
 
     @classmethod
-    def search(cls, term, group_ids, include_drafts=False, limit=20):
+    def search(cls, term, group_ids, user_id=None, include_drafts=False, limit=20, is_admin=False):
         where = cls.is_archived == False
 
         if not include_drafts:
@@ -1028,7 +1035,7 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
 
         where &= DataSourceGroup.group_id.in_(group_ids)
 
-        return cls.query.join(
+        search_query = cls.query.join(
             DataSourceGroup,
             cls.data_source_id == DataSourceGroup.data_source_id
         ).options(
@@ -1037,7 +1044,13 @@ class Query(ChangeTrackingMixin, TimestampMixin, BelongsToOrgMixin, db.Model):
             term,
             # sort the result using the weight as defined in the search vector column
             sort=True
-        ).distinct().limit(limit)
+        )
+
+        if not is_admin:
+            print("not an admin")
+            search_query = search_query.filter(or_(Query.user_id == user_id, Query.user_id == 1))
+
+        return search_query.distinct().limit(limit)
 
     @classmethod
     def recent(cls, group_ids, user_id=None, limit=20):
