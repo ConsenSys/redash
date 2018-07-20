@@ -10,6 +10,7 @@ const EmptyStateComponent = {
     description: '@',
     illustration: '@',
     helpLink: '@',
+    showQueryStep: '<',
     showAlertStep: '<',
     showDashboardStep: '<',
     showInviteStep: '<',
@@ -23,6 +24,9 @@ const EmptyStateComponent = {
     this.dashboardStepCompleted = OrganizationStatus.objectCounters.dashboards > 0;
     this.alertStepCompleted = OrganizationStatus.objectCounters.alerts > 0;
     this.inviteStepCompleted = OrganizationStatus.objectCounters.users > 1;
+    this.onlyQueryStep = () => {
+      return !(this.showAlertStep || this.showDashboardStep || this.showInviteStep)
+    };
 
     this.shouldShowOnboarding = () => {
       if (!this.onboardingMode) {

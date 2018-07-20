@@ -11,13 +11,12 @@
     <div class="empty-state__steps">
         <h4>Let's get started</h4>
         <ol>
-            <li ng-class="{done: $ctrl.dataSourceStepCompleted}">
-                <span ng-if="!$ctrl.isAdmin">Ask an account admin to connect a data source.</span>
-                <span ng-if="$ctrl.isAdmin">
+            <li ng-class="{done: $ctrl.dataSourceStepCompleted}" ng-if="$ctrl.isAdmin">
+                <span>
                     <a href="./data_sources">Connect</a> a Data Source
                 </span>
             </li>
-            <li ng-class="{done: $ctrl.queryStepCompleted}">
+            <li ng-class="{done: $ctrl.queryStepCompleted && !$ctrl.onlyQueryStep()}">
                 <a href="./queries/new">Create</a> your first Query</li>
             <li ng-if="$ctrl.showAlertStep" ng-class="{done: $ctrl.alertStepCompleted}">
                 <a href="./alerts/new">Create</a> your first Alert</li>
@@ -26,7 +25,7 @@
             <li ng-if="$ctrl.showInviteStep" ng-class="{done: $ctrl.inviteStepCompleted}">
                 <a href="./users/new">Invite</a> your team members</li>
         </ol>
-        <p>Need more support?
+        <p ng-if="$ctrl.helpLink">Need more support?
             <a href="./{{$ctrl.helpLink}}" target="_blank">See our Help
                 <i class="fa fa-external-link" aria-hidden="true"></i>
             </a>
